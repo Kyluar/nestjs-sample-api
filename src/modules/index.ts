@@ -1,0 +1,5 @@
+export { HealthModule } from './health/health.module'
+export { AuthModule } from './auth/auth.module'
+export { UserModule } from './user/user.module'
+export { PostModule } from './post/post.module'
+export { PrismaModule } from './prisma/prisma.module'
