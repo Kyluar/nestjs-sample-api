@@ -6,6 +6,8 @@ import {
 import { PrismaService } from '@/modules/prisma/prisma.service'
 import { JwtService } from '@nestjs/jwt'
 import { LoginDto } from '@/lib/dtos/auth/main.dto'
+import * as bcrypt from 'bcrypt'
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -25,13 +27,13 @@ export class AuthService {
     }
 
     // Step 2: Check if the password is correct
-    const isPasswordValid = user.password === password
+    const isMatch = await bcrypt.compare(password as string, user.password)
 
     // If password does not match, throw an error
-    if (!isPasswordValid) {
+    if (!isMatch) {
       throw new UnauthorizedException('Invalid password')
     }
-    const payload = { username: user.name, sub: user.uuid }
+    const payload = { sub: user.uuid }
 
     // Step 3: Generate a JWT containing the user's ID and return it
     return {

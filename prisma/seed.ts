@@ -1,4 +1,8 @@
 import { PrismaClient } from '@prisma/client'
+import * as bcrypt from 'bcrypt'
+
+const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS ?? '10', 10)
+
 const prisma = new PrismaClient()
 async function main() {
   const gabriel = await prisma.user.upsert({
@@ -7,7 +11,7 @@ async function main() {
     create: {
       email: 'gabriel@prisma.io',
       name: 'Gabriel',
-      password: 'gabrielpassword',
+      password: await bcrypt.hash('gabrielpassword', SALT_ROUNDS),
       posts: {
         create: {
           title: 'Seeding with Prisma',
@@ -24,7 +28,7 @@ async function main() {
     create: {
       email: 'alice@prisma.io',
       name: 'Alice',
-      password: 'alicepassword',
+      password: await bcrypt.hash('alicepassword', SALT_ROUNDS),
       posts: {
         create: {
           title: 'Check out Prisma with Next.js',
@@ -40,7 +44,7 @@ async function main() {
     create: {
       email: 'bob@prisma.io',
       name: 'Bob',
-      password: 'bobpassword',
+      password: await bcrypt.hash('bobpassword', SALT_ROUNDS),
       posts: {
         create: [
           {
