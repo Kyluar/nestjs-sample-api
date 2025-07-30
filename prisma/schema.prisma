@@ -22,6 +22,8 @@ model User {
   updatedAt DateTime @updatedAt @db.Timestamp(6)
 
   posts Post[]
+
+  @@map("users")
 }
 
 model Post {
@@ -34,4 +36,6 @@ model Post {
   updatedAt  DateTime @updatedAt @db.Timestamp(6)
 
   author User? @relation(fields: [authorUuid], references: [uuid])
+
+  @@map("posts")
 }
