@@ -31,10 +31,11 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid password')
     }
+    const payload = { username: user.name, sub: user.uuid }
 
     // Step 3: Generate a JWT containing the user's ID and return it
     return {
-      accessToken: this.jwtService.sign({ userUuid: user.uuid }),
+      accessToken: this.jwtService.sign(payload),
     }
   }
 }
