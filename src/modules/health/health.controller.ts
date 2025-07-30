@@ -6,9 +6,10 @@ import {
   HealthCheck,
   HealthCheckResult,
 } from '@nestjs/terminus'
-
+import { Public } from '@/lib/decorators/public'
 import { PrismaService } from '../prisma/prisma.service'
 
+@Public()
 @Controller('health')
 export class HealthController {
   constructor(
@@ -33,7 +34,6 @@ export class HealthController {
       () => this.http.pingCheck('nestjs-docs', 'https://docs.nestjs.com'),
     ])
   }
-
   @Get('database')
   @HealthCheck()
   checkPrisma() {
