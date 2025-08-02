@@ -7,7 +7,7 @@ import {
   HealthCheckResult,
 } from '@nestjs/terminus'
 import { Public } from '@/lib/decorators/public'
-import { PrismaService } from '../prisma/prisma.service'
+import { PrismaService } from 'nestjs-prisma'
 
 @Public()
 @Controller('health')
