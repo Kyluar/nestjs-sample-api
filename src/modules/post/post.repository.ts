@@ -9,7 +9,7 @@ import {
 
 @Injectable()
 export class PostRepository implements IPostRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   post(
     postWhereUniqueInput: Prisma.PostWhereUniqueInput

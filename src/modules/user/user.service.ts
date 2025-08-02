@@ -1,73 +1,45 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from 'nestjs-prisma'
-import { User, Prisma } from '@prisma/client'
+import { Prisma, User } from '@prisma/client'
 import { ConfigService } from '@nestjs/config'
 import * as bcrypt from 'bcrypt'
+import { IUserService } from '@/lib/types/modules/user'
+import { UserRepository } from './user.repository'
 
 @Injectable()
-export class UsersService {
+export class UsersService implements IUserService {
   constructor(
-    private prisma: PrismaService,
+    private repository: UserRepository,
     private configService: ConfigService
   ) {}
 
-  async user(
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput
-  ): Promise<User | null> {
-    return this.prisma.user.findUnique({
-      where: userWhereUniqueInput,
-    })
+  private hashPassword(password: string) {
+    return bcrypt.hash(password, this.configService.getOrThrow('saltRounds'))
   }
 
-  async users(params: {
-    skip?: number
-    take?: number
-    cursor?: Prisma.UserWhereUniqueInput
-    where?: Prisma.UserWhereInput
-    orderBy?: Prisma.UserOrderByWithRelationInput
-  }): Promise<User[]> {
-    const { skip, take, cursor, where, orderBy } = params
-    return this.prisma.user.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    })
+  getUsers(): Promise<User[]> {
+    return this.repository.users({})
+  }
+
+  getUserByUuid(uuid: string): Promise<User | null> {
+    return this.repository.user({ uuid })
+  }
+
+  deleteUserByUuid(uuid: string): Promise<User> {
+    return this.repository.deleteUser({ uuid })
   }
 
   async createUser(data: Prisma.UserCreateInput): Promise<User> {
-    data.password = await bcrypt.hash(
-      data.password,
-      this.configService.getOrThrow('saltRounds')
-    )
-    return this.prisma.user.create({
-      data,
-    })
+    data.password = await this.hashPassword(data.password)
+    return this.repository.createUser(data)
   }
 
-  async updateUser(params: {
-    where: Prisma.UserWhereUniqueInput
+  async updateUserByUuid(
+    uuid: string,
     data: Prisma.UserUpdateInput
-  }): Promise<User> {
-    const { where, data } = params
-
+  ): Promise<User> {
     if (data.password) {
-      data.password = await bcrypt.hash(
-        data.password as string,
-        this.configService.getOrThrow('saltRounds')
-      )
+      data.password = await this.hashPassword(data.password as string)
     }
-
-    return this.prisma.user.update({
-      data,
-      where,
-    })
-  }
-
-  async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    return this.prisma.user.delete({
-      where,
-    })
+    return this.repository.updateUser({ where: { uuid }, data })
   }
 }
