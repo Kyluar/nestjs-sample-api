@@ -1,51 +1,34 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from 'nestjs-prisma'
+
+import { IPostService } from '@/lib/types/modules/post'
+import { PostRepository } from './post.repository'
 import { Post, Prisma } from '@prisma/client'
 
 @Injectable()
-export class PostsService {
-  constructor(private prisma: PrismaService) {}
+export class PostService implements IPostService {
+  constructor(private repository: PostRepository) {}
 
-  async post(
-    postWhereUniqueInput: Prisma.PostWhereUniqueInput
-  ): Promise<Post | null> {
-    return this.prisma.post.findUnique({
-      where: postWhereUniqueInput,
-    })
+  getPublishedPosts(): Promise<Post[]> {
+    return this.repository.posts({ where: { published: true } })
   }
 
-  async posts(params: {
-    skip?: number
-    take?: number
-    cursor?: Prisma.PostWhereUniqueInput
-    where?: Prisma.PostWhereInput
-    orderBy?: Prisma.PostOrderByWithRelationInput
-  }): Promise<Post[]> {
-    return this.prisma.post.findMany({
-      ...params,
-    })
+  getDraftPosts(): Promise<Post[]> {
+    return this.repository.posts({ where: { published: false } })
   }
 
-  async createPost(data: Prisma.PostCreateInput): Promise<Post> {
-    return this.prisma.post.create({
-      data,
-    })
+  getPostByUuid(uuid: string): Promise<Post | null> {
+    return this.repository.post({ uuid })
   }
 
-  async updatePost(params: {
-    where: Prisma.PostWhereUniqueInput
-    data: Prisma.PostUpdateInput
-  }): Promise<Post> {
-    const { data, where } = params
-    return this.prisma.post.update({
-      data,
-      where,
-    })
+  createPost(data: Prisma.PostCreateInput): Promise<Post> {
+    return this.repository.createPost(data)
   }
 
-  async deletePost(where: Prisma.PostWhereUniqueInput): Promise<Post> {
-    return this.prisma.post.delete({
-      where,
-    })
+  updatePostByUuid(uuid: string, data: Prisma.PostUpdateInput): Promise<Post> {
+    return this.repository.updatePost({ where: { uuid }, data })
+  }
+
+  deletePostByUuid(uuid: string): Promise<Post> {
+    return this.repository.deletePost({ uuid })
   }
 }
