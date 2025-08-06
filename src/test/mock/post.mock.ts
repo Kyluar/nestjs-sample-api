@@ -6,8 +6,8 @@ export const createPostData: Post = {
   title: 'Create Post Data',
   content: 'Created Post content',
   published: true,
-  createdAt: new Date('2024-01-01'),
-  updatedAt: new Date('2024-01-01'),
+  createdAt: new Date(),
+  updatedAt: new Date(),
 }
 
 export const publishedMockPosts: Post[] = [

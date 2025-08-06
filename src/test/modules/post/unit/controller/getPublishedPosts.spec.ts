@@ -2,7 +2,6 @@ import { Test } from '@nestjs/testing'
 import { PostController } from '@/modules/post/post.controller'
 import { PostService } from '@/modules/post/post.service'
 import { publishedMockPosts } from '@/test/mock/post.mock'
-import type { Post } from '@prisma/client'
 
 describe('PostController.getPublishedPosts', () => {
   let postController: PostController
@@ -16,9 +15,7 @@ describe('PostController.getPublishedPosts', () => {
         {
           provide: PostService,
           useValue: {
-            getPublishedPosts: jest
-              .fn()
-              .mockResolvedValue(publishedMockPosts as Post[]),
+            getPublishedPosts: jest.fn().mockResolvedValue(publishedMockPosts),
           },
         },
       ],
