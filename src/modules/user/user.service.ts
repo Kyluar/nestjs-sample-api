@@ -20,7 +20,7 @@ export class UsersService implements IUserService {
     return this.repository.users({})
   }
 
-  getUserByUuid(uuid: string): Promise<User | null> {
+  getUserByUuid(uuid: string): Promise<User> {
     return this.repository.user({ uuid })
   }
 

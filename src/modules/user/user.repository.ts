@@ -11,10 +11,8 @@ import { PrismaService } from 'nestjs-prisma'
 export class UserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  user(
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput
-  ): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: userWhereUniqueInput })
+  user(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<User> {
+    return this.prisma.user.findUniqueOrThrow({ where: userWhereUniqueInput })
   }
 
   users(params: GetUsersParams): Promise<User[]> {

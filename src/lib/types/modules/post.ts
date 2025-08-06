@@ -15,7 +15,7 @@ export type UpdatePostParams = {
 }
 
 export interface IPostRepository {
-  post(postWhereUniqueInput: Prisma.PostWhereUniqueInput): Promise<Post | null>
+  post(postWhereUniqueInput: Prisma.PostWhereUniqueInput): Promise<Post>
   posts(params: GetPostsParams): Promise<Post[]>
   createPost(data: Prisma.PostCreateInput): Promise<Post>
   updatePost(params: UpdatePostParams): Promise<Post>
@@ -25,7 +25,7 @@ export interface IPostRepository {
 export interface IPostService {
   getPublishedPosts(): Promise<Post[]>
   getDraftPosts(): Promise<Post[]>
-  getPostByUuid(uuid: string): Promise<Post | null>
+  getPostByUuid(uuid: string): Promise<Post>
   createPost(data: Prisma.PostCreateInput): Promise<Post>
   updatePostByUuid(uuid: string, data: Prisma.PostUpdateInput): Promise<Post>
   deletePostByUuid(uuid: string): Promise<Post>
@@ -35,7 +35,7 @@ export interface IPostController {
   getPublishedPosts(): Promise<Post[]>
   getDraftPosts(): Promise<Post[]>
   createPost(postData: PostDto): Promise<Post>
-  getPostByUuid(uuid: string): Promise<Post | null>
+  getPostByUuid(uuid: string): Promise<Post>
   updatePost(uuid: string, partialPostDto: PartialPostDto): Promise<Post>
   deletePost(uuid: string): Promise<Post>
 }

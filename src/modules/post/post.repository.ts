@@ -11,10 +11,8 @@ import {
 export class PostRepository implements IPostRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  post(
-    postWhereUniqueInput: Prisma.PostWhereUniqueInput
-  ): Promise<Post | null> {
-    return this.prisma.post.findUnique({
+  post(postWhereUniqueInput: Prisma.PostWhereUniqueInput): Promise<Post> {
+    return this.prisma.post.findUniqueOrThrow({
       where: postWhereUniqueInput,
     })
   }

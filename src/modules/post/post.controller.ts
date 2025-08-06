@@ -37,7 +37,7 @@ export class PostController implements IPostController {
   @Get(':uuid')
   async getPostByUuid(
     @Param('uuid', ParseUUIDPipe) uuid: string
-  ): Promise<PostModel | null> {
+  ): Promise<PostModel> {
     return this.service.getPostByUuid(uuid)
   }
 
