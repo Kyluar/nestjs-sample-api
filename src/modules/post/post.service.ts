@@ -16,7 +16,7 @@ export class PostService implements IPostService {
     return this.repository.posts({ where: { published: false } })
   }
 
-  getPostByUuid(uuid: string): Promise<Post | null> {
+  getPostByUuid(uuid: string): Promise<Post> {
     return this.repository.post({ uuid })
   }
 

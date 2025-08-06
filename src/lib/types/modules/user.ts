@@ -15,7 +15,7 @@ export type UpdateUserParams = {
 }
 
 export interface IUserRepository {
-  user(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<User | null>
+  user(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<User>
   users(params: GetUsersParams): Promise<User[]>
   createUser(data: Prisma.UserCreateInput): Promise<User>
   updateUser(params: UpdateUserParams): Promise<User>
@@ -24,7 +24,7 @@ export interface IUserRepository {
 
 export interface IUserService {
   getUsers(): Promise<User[]>
-  getUserByUuid(uuid: string): Promise<User | null>
+  getUserByUuid(uuid: string): Promise<User>
   createUser(data: Prisma.UserCreateInput): Promise<User>
   updateUserByUuid(uuid: string, data: Prisma.UserUpdateInput): Promise<User>
   deleteUserByUuid(uuid: string): Promise<User>
@@ -33,7 +33,7 @@ export interface IUserService {
 export interface IUserController {
   getUsers(): Promise<User[]>
   createUser(userData: UserDto): Promise<User>
-  getUserByUuid(uuid: string): Promise<User | null>
+  getUserByUuid(uuid: string): Promise<User>
   updateUser(uuid: string, partialUserDto: PartialUserDto): Promise<User>
   deleteUser(uuid: string): Promise<User>
 }
