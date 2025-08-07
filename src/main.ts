@@ -3,6 +3,8 @@ import { AppModule } from './app.module'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { PrismaClientExceptionFilter } from '@/lib/filters'
 
+const port = process.env.PORT ?? 3000
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
 
@@ -19,6 +21,7 @@ async function bootstrap() {
   const { httpAdapter } = app.get(HttpAdapterHost)
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter))
 
-  await app.listen(process.env.PORT ?? 3000)
+  await app.listen(port)
+  console.log(`Server is running on port ${port}`)
 }
 bootstrap()
