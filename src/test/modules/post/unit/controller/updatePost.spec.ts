@@ -3,6 +3,7 @@ import { PostController } from '@/modules/post/post.controller'
 import { PostService } from '@/modules/post/post.service'
 import { draftMockPosts } from '@/test/mock'
 import { BadRequestException, NotFoundException } from '@nestjs/common'
+import { Post } from '@prisma/client'
 
 const ERROR_MESSAGES = {
   NOT_FOUND: 'Registro não encontrado',
@@ -15,6 +16,7 @@ describe('PostController.updatePost', () => {
   let postController: PostController
   let postService: PostService
   let spy: jest.SpyInstance
+  const post: Post = (draftMockPosts as Post[])[0]
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -23,7 +25,7 @@ describe('PostController.updatePost', () => {
         {
           provide: PostService,
           useValue: {
-            updatePostByUuid: jest.fn().mockResolvedValue(draftMockPosts[0]),
+            updatePostByUuid: jest.fn().mockResolvedValue(post),
           },
         },
       ],
@@ -40,19 +42,13 @@ describe('PostController.updatePost', () => {
 
   describe('expected behavior', () => {
     it('should call the service method correctly', async () => {
-      await postController.updatePost(draftMockPosts[0].uuid, draftMockPosts[0])
-      expect(spy).toHaveBeenCalledWith(
-        draftMockPosts[0].uuid,
-        draftMockPosts[0]
-      )
+      await postController.updatePost(post.uuid, post)
+      expect(spy).toHaveBeenCalledWith(post.uuid, post)
     })
 
     it('should update the post related to uuid', async () => {
-      const result = await postController.updatePost(
-        draftMockPosts[0].uuid,
-        draftMockPosts[0]
-      )
-      expect(result).toEqual(draftMockPosts[0])
+      const result = await postController.updatePost(post.uuid, post)
+      expect(result).toEqual(post)
     })
   })
 
@@ -61,8 +57,8 @@ describe('PostController.updatePost', () => {
       const message = ERROR_MESSAGES.UNMAPPED_FIELD + 'test'
       spy.mockRejectedValue(new BadRequestException(message))
       await expect(
-        postController.updatePost(draftMockPosts[0].uuid, {
-          ...draftMockPosts[0],
+        postController.updatePost(post.uuid, {
+          ...post,
           test: 'unmapped field',
         })
       ).rejects.toThrow(message)
@@ -71,10 +67,7 @@ describe('PostController.updatePost', () => {
     it('should throw NotFoundException when post is not found', async () => {
       spy.mockRejectedValue(new NotFoundException(ERROR_MESSAGES.NOT_FOUND))
       await expect(
-        postController.updatePost(
-          '123e4567-e89b-12d3-a456-426614175002',
-          draftMockPosts[0]
-        )
+        postController.updatePost('123e4567-e89b-12d3-a456-426614175002', post)
       ).rejects.toThrow(ERROR_MESSAGES.NOT_FOUND)
     })
 
@@ -83,15 +76,15 @@ describe('PostController.updatePost', () => {
         new BadRequestException(ERROR_MESSAGES.INVALID_UUID)
       )
       await expect(
-        postController.updatePost('invalid-uuid', draftMockPosts[0])
+        postController.updatePost('invalid-uuid', post)
       ).rejects.toThrow(ERROR_MESSAGES.INVALID_UUID)
     })
 
     it('should propagate service error', async () => {
       spy.mockRejectedValue(new Error(ERROR_MESSAGES.SERVICE_ERROR))
-      await expect(
-        postController.updatePost(draftMockPosts[0].uuid, draftMockPosts[0])
-      ).rejects.toThrow(ERROR_MESSAGES.SERVICE_ERROR)
+      await expect(postController.updatePost(post.uuid, post)).rejects.toThrow(
+        ERROR_MESSAGES.SERVICE_ERROR
+      )
     })
   })
 })
