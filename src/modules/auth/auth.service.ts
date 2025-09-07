@@ -5,7 +5,11 @@ import {
 } from '@nestjs/common'
 import { PrismaService } from 'nestjs-prisma'
 import { JwtService } from '@nestjs/jwt'
-import { LoginDto } from '@/lib/dtos/auth/main.dto'
+import {
+  LoginDto,
+  LoginReturnDto,
+  loginReturnSchema,
+} from '@/lib/dtos/auth/main.dto'
 import * as bcrypt from 'bcrypt'
 
 @Injectable()
@@ -15,7 +19,7 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async login({ password, email }: LoginDto): Promise<{ accessToken: string }> {
+  async login({ password, email }: LoginDto): Promise<LoginReturnDto> {
     // Step 1: Fetch a user with the given email
     const user = await this.prisma.user.findUniqueOrThrow({
       where: { email: email as string },
@@ -36,8 +40,8 @@ export class AuthService {
     const payload = { sub: user.uuid }
 
     // Step 3: Generate a JWT containing the user's ID and return it
-    return {
+    return loginReturnSchema.parse({
       accessToken: this.jwtService.sign(payload),
-    }
+    })
   }
 }

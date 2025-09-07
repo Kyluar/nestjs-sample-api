@@ -6,4 +6,10 @@ export const loginSchema = z.strictObject({
   password: z.string().min(10),
 })
 
+export const loginReturnSchema = z.strictObject({
+  accessToken: z.jwt(),
+})
+
+export type LoginReturnDto = z.infer<typeof loginReturnSchema>
+
 export class LoginDto extends createZodDto(loginSchema) {}
