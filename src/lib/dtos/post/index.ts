@@ -1,2 +1,2 @@
-export * from './main.dto'
-export * from './partial.dto'
+export * from './create.dto'
+export * from './update.dto'

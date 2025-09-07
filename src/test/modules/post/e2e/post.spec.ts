@@ -1,5 +1,4 @@
 import * as request from 'supertest'
-import { z } from '@/lib/config/zod'
 import { Test } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import { AppModule } from '../../../../app.module'
@@ -9,19 +8,6 @@ import { LoginReturnDto } from '@/lib/dtos/auth/main.dto'
 import { postSchema } from '@/lib/dtos/post'
 
 describe('Post', () => {
-  const postResponseSchema = z
-    .strictObject({
-      ...postSchema.shape,
-      uuid: z.uuid(),
-      createdAt: z
-        .instanceof(Date)
-        .or(z.string().transform((str) => new Date(str))),
-      updatedAt: z
-        .instanceof(Date)
-        .or(z.string().transform((str) => new Date(str))),
-    })
-    .required() satisfies z.ZodType<Post>
-
   const credentials = {
     email: 'gabriel@prisma.io',
     password: 'gabrielpassword',
@@ -72,7 +58,7 @@ describe('Post', () => {
         .expect((res) => {
           const posts = res.body as Post[]
           expect(
-            posts.every((post) => postResponseSchema.safeParse(post).success)
+            posts.every((post) => postSchema.safeParse(post).success)
           ).toBe(true)
           expect(posts.every((post) => post.published)).toBe(true)
         })

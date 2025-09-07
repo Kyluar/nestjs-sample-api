@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing'
 import { PostController } from '@/modules/post/post.controller'
 import { PostService } from '@/modules/post/post.service'
-import { PostDto } from '@/lib/dtos/post'
+import { CreatePostDto } from '@/lib/dtos/post'
 import { createPostData } from '@/test/mock'
 
 describe('PostController.createPost', () => {
@@ -32,12 +32,14 @@ describe('PostController.createPost', () => {
   })
 
   it('should call the service method correctly', async () => {
-    await postController.createPost(createPostData as PostDto)
+    await postController.createPost(createPostData as CreatePostDto)
     expect(spy).toHaveBeenCalledWith(createPostData)
   })
 
   it('should return the post created', async () => {
-    const result = await postController.createPost(createPostData as PostDto)
+    const result = await postController.createPost(
+      createPostData as CreatePostDto
+    )
     expect(result).toEqual(createPostData)
   })
 
@@ -45,7 +47,7 @@ describe('PostController.createPost', () => {
     spy.mockRejectedValue(new Error('Service error'))
 
     await expect(
-      postController.createPost(createPostData as PostDto)
+      postController.createPost(createPostData as CreatePostDto)
     ).rejects.toThrow('Service error')
   })
 })

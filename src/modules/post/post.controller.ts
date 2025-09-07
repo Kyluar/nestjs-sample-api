@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common'
 import { PostService } from './post.service'
 import { Post as PostModel, Prisma } from '@prisma/client'
-import { PostDto, PartialPostDto } from '@/lib/dtos/post'
+import { CreatePostDto, UpdatePostDto } from '@/lib/dtos/post'
 import { ApiBearerAuth } from '@nestjs/swagger'
 import { IPostController } from '@/lib/types/modules/post'
 
@@ -30,7 +30,7 @@ export class PostController implements IPostController {
   }
 
   @Post()
-  async createPost(@Body() postData: PostDto): Promise<PostModel> {
+  async createPost(@Body() postData: CreatePostDto): Promise<PostModel> {
     return this.service.createPost(postData as Prisma.PostCreateInput)
   }
 
@@ -44,7 +44,7 @@ export class PostController implements IPostController {
   @Patch(':uuid')
   async updatePost(
     @Param('uuid', ParseUUIDPipe) uuid: string,
-    @Body() partialPostDto: PartialPostDto
+    @Body() partialPostDto: UpdatePostDto
   ) {
     return this.service.updatePostByUuid(uuid, partialPostDto)
   }

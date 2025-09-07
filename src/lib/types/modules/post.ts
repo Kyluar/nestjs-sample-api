@@ -1,5 +1,5 @@
 import { Prisma, Post } from '@prisma/client'
-import { PostDto, PartialPostDto } from '@/lib/dtos/post'
+import { CreatePostDto, UpdatePostDto } from '@/lib/dtos/post'
 
 export type GetPostsParams = {
   skip?: number
@@ -34,8 +34,8 @@ export interface IPostService {
 export interface IPostController {
   getPublishedPosts(): Promise<Post[]>
   getDraftPosts(): Promise<Post[]>
-  createPost(postData: PostDto): Promise<Post>
+  createPost(postData: CreatePostDto): Promise<Post>
   getPostByUuid(uuid: string): Promise<Post>
-  updatePost(uuid: string, partialPostDto: PartialPostDto): Promise<Post>
+  updatePost(uuid: string, partialPostDto: UpdatePostDto): Promise<Post>
   deletePost(uuid: string): Promise<Post>
 }
