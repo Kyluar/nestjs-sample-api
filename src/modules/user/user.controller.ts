@@ -15,7 +15,7 @@ import { ApiBearerAuth } from '@nestjs/swagger'
 import { IUserController } from '@/lib/types/modules/user'
 
 @ApiBearerAuth()
-@Controller('user')
+@Controller('users')
 export class UserController implements IUserController {
   constructor(private readonly service: UsersService) {}
 

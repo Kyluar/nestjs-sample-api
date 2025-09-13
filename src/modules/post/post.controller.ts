@@ -15,7 +15,7 @@ import { ApiBearerAuth } from '@nestjs/swagger'
 import { IPostController } from '@/lib/types/modules/post'
 
 @ApiBearerAuth()
-@Controller('post')
+@Controller('posts')
 export class PostController implements IPostController {
   constructor(protected readonly service: PostService) {}
 

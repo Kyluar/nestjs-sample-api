@@ -35,14 +35,14 @@ describe('Post', () => {
     jwtToken = loginResponse.body.accessToken
   })
 
-  describe(`/GET post/feed`, () => {
+  describe(`/GET posts/feed`, () => {
     it('should be authenticated', () => {
       expect(jwtToken).toBeDefined()
     })
 
     it('should return an array', () => {
       return request(app.getHttpServer() as Express)
-        .get('/post/feed')
+        .get('/posts/feed')
         .set('Authorization', `Bearer ${jwtToken}`)
         .expect(200)
         .expect((res) => {
@@ -52,7 +52,7 @@ describe('Post', () => {
 
     it('should be an array of published Posts', () => {
       return request(app.getHttpServer() as Express)
-        .get('/post/feed')
+        .get('/posts/feed')
         .set('Authorization', `Bearer ${jwtToken}`)
         .expect(200)
         .expect((res) => {
