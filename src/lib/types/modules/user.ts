@@ -1,5 +1,5 @@
 import { Prisma, User } from '@prisma/client'
-import { UserDto, PartialUserDto } from '@/lib/dtos/user'
+import { CreateUserDto, UpdateUserDto } from '@/lib/dtos/user'
 
 export type GetUsersParams = {
   skip?: number
@@ -32,8 +32,8 @@ export interface IUserService {
 
 export interface IUserController {
   getUsers(): Promise<User[]>
-  createUser(userData: UserDto): Promise<User>
+  createUser(userData: CreateUserDto): Promise<User>
   getUserByUuid(uuid: string): Promise<User>
-  updateUser(uuid: string, partialUserDto: PartialUserDto): Promise<User>
+  updateUser(uuid: string, partialUserDto: UpdateUserDto): Promise<User>
   deleteUser(uuid: string): Promise<User>
 }

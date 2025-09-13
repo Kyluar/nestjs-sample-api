@@ -9,7 +9,7 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common'
 import { UsersService } from './user.service'
-import { PartialUserDto, UserDto } from '@/lib/dtos/user'
+import { UpdateUserDto, CreateUserDto } from '@/lib/dtos/user'
 import { User as UserModel, Prisma } from '@prisma/client'
 import { ApiBearerAuth } from '@nestjs/swagger'
 import { IUserController } from '@/lib/types/modules/user'
@@ -32,14 +32,14 @@ export class UserController implements IUserController {
   }
 
   @Post()
-  createUser(@Body() userData: UserDto): Promise<UserModel> {
+  createUser(@Body() userData: CreateUserDto): Promise<UserModel> {
     return this.service.createUser(userData as Prisma.UserCreateInput)
   }
 
   @Patch(':uuid')
   updateUser(
     @Param('uuid', ParseUUIDPipe) uuid: string,
-    @Body() partialUserDto: PartialUserDto
+    @Body() partialUserDto: UpdateUserDto
   ): Promise<UserModel> {
     return this.service.updateUserByUuid(uuid, partialUserDto)
   }

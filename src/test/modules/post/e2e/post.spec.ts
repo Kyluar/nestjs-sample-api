@@ -4,7 +4,7 @@ import { INestApplication } from '@nestjs/common'
 import { AppModule } from '../../../../app.module'
 import { Express } from 'express'
 import { Post } from '@prisma/client'
-import { LoginReturnDto } from '@/lib/dtos/auth/main.dto'
+import { LoginReturnDto } from '@/lib/dtos/auth'
 import { postSchema } from '@/lib/dtos/post'
 
 describe('Post', () => {
