@@ -7,6 +7,15 @@ import { Express } from 'express'
 import { Post } from '@prisma/client'
 import { LoginReturnDto } from '@/lib/dtos/auth'
 import { postSchema, createPostSchema } from '@/lib/dtos/post'
+import {
+  requestTest,
+  requestDataValidationTest,
+  requestGetTest,
+} from '@/test/utils/request.test.utils'
+import {
+  RequestDataValidationTestParams,
+  GetRequestTestParams,
+} from '@/test/types/request.test.types.utils'
 
 const postRoutes = {
   base: '/posts',
@@ -25,6 +34,16 @@ describe('Post', () => {
   let app: INestApplication
   let jwtToken: string
 
+  const postGetRequest = (
+    params: Omit<GetRequestTestParams, 'getApp' | 'getJwtToken'>
+  ) => {
+    return requestGetTest({
+      ...params,
+      getApp: () => app,
+      getJwtToken: () => jwtToken,
+    })
+  }
+
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
@@ -38,7 +57,6 @@ describe('Post', () => {
     )
       .post('/auth/login')
       .send(credentials)
-      .expect(201)
 
     jwtToken = loginResponse.body.accessToken
   })
@@ -50,34 +68,30 @@ describe('Post', () => {
   })
 
   describe(`/GET ${postRoutes.feed}`, () => {
-    it('should return an array of published posts', () => {
-      return request(app.getHttpServer() as Express)
-        .get(postRoutes.feed)
-        .set('Authorization', `Bearer ${jwtToken}`)
-        .expect(200)
-        .expect((res) => {
-          const posts = res.body as Post[]
-          expect(
-            posts.every((post) => postSchema.safeParse(post).success)
-          ).toBe(true)
-          expect(posts.every((post) => post.published)).toBe(true)
-        })
+    postGetRequest({
+      name: 'should return an array of published posts',
+      url: postRoutes.feed,
+      resCallback: (res) => {
+        const posts = res.body as Post[]
+        expect(posts.every((post) => postSchema.safeParse(post).success)).toBe(
+          true
+        )
+        expect(posts.every((post) => post.published)).toBe(true)
+      },
     })
   })
 
   describe(`/GET ${postRoutes.draft}`, () => {
-    it('should return an array of draft posts', () => {
-      return request(app.getHttpServer() as Express)
-        .get(postRoutes.draft)
-        .set('Authorization', `Bearer ${jwtToken}`)
-        .expect(200)
-        .expect((res) => {
-          const posts = res.body as Post[]
-          expect(
-            posts.every((post) => postSchema.safeParse(post).success)
-          ).toBe(true)
-          expect(posts.every((post) => !post.published)).toBe(true)
-        })
+    postGetRequest({
+      name: 'should return an array of draft posts',
+      url: postRoutes.draft,
+      resCallback: (res) => {
+        const posts = res.body as Post[]
+        expect(posts.every((post) => postSchema.safeParse(post).success)).toBe(
+          true
+        )
+        expect(posts.every((post) => !post.published)).toBe(true)
+      },
     })
   })
 
@@ -89,151 +103,94 @@ describe('Post', () => {
       published: true,
     }
 
-    // it('should create a new post', () => {
-    //   return request(app.getHttpServer() as Express)
-    //     .post(postRoutes.base)
-    //     .set('Authorization', `Bearer ${jwtToken}`)
-    //     .send(newPostData)
-    //     .expect(201)
-    //     .expect((res) => {
-    //       const post = res.body as Post
-    //       expect(postSchema.safeParse(post).success).toBe(true)
-    //     })
+    const requestPostTest = (
+      params: Omit<
+        RequestDataValidationTestParams<z.infer<typeof createPostSchema>>,
+        'requestData' | 'getApp' | 'getJwtToken' | 'url'
+      >
+    ) => {
+      return requestDataValidationTest({
+        ...params,
+        getApp: () => app,
+        getJwtToken: () => jwtToken,
+        requestData: newPostData,
+        url: postRoutes.base,
+      })
+    }
+
+    // requestTest({
+    //   getApp: () => app,
+    //   method: 'POST',
+    //   getJwtToken: () => jwtToken,
+    //   resCallback: (res) => {
+    //     const post = res.body as Post
+    //     expect(postSchema.safeParse(post).success).toBe(true)
+    //   },
+    //   name: 'should create a new post',
+    //   requestData: newPostData,
+    //   url: postRoutes.base,
+    //   status: 201,
     // })
 
     describe('Fail Tests', () => {
-      it('should fail to create post without authentication', () => {
-        return request(app.getHttpServer() as Express)
-          .post(postRoutes.base)
-          .send(newPostData)
-          .expect(401)
-      })
-    })
-
-    describe('Data Request Validation', () => {
-      describe('Title', () => {
-        it('should fail to create post with undefined title', () => {
-          const invalidData = {
-            ...newPostData,
-            title: undefined,
-          }
-          return request(app.getHttpServer() as Express)
-            .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
-            .send(invalidData)
-            .expect(400)
-        })
-
-        it('should fail to create post with a title type different from string', () => {
-          const invalidData = {
-            ...newPostData,
-            title: true,
-          }
-          return request(app.getHttpServer() as Express)
-            .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
-            .send(invalidData)
-            .expect(400)
-        })
-
-        it('should fail to create post with a title length > 30', () => {
-          const longTitle = 'To long title'.padEnd(31, '.')
-          const invalidData = {
-            ...newPostData,
-            title: longTitle,
-          }
-          return request(app.getHttpServer() as Express)
-            .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
-            .send(invalidData)
-            .expect(400)
-        })
-
-        it('should fail to create post with an empty title', () => {
-          const invalidData = {
-            ...newPostData,
-            title: ' ',
-          }
-          return request(app.getHttpServer() as Express)
-            .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
-            .send(invalidData)
-            .expect(400)
-        })
+      requestTest({
+        getApp: () => app,
+        method: 'POST',
+        name: 'should fail to create post without authentication',
+        requestData: newPostData,
+        url: postRoutes.base,
+        status: 401,
       })
 
-      describe('Content', () => {
-        it('should fail to create post with undefined content', () => {
-          const invalidData = {
-            ...newPostData,
-            content: undefined,
-          }
-          return request(app.getHttpServer() as Express)
-            .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
-            .send(invalidData)
-            .expect(400)
-        })
-        it('should fail to create post with a content type different from string', () => {
-          const invalidData = {
-            ...newPostData,
-            content: true,
-          }
-          return request(app.getHttpServer() as Express)
-            .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
-            .send(invalidData)
-            .expect(400)
+      describe('Validation', () => {
+        describe('Title', () => {
+          requestPostTest({
+            name: 'should fail to create post with undefined title',
+            invalidData: { title: undefined },
+          })
+
+          requestPostTest({
+            name: 'should fail to create post with a title type different from string',
+            invalidData: { title: true },
+          })
+
+          requestPostTest({
+            name: 'should fail to create post with a title length > 30',
+            invalidData: { title: 'To long title'.padEnd(31, '.') },
+          })
+
+          requestPostTest({
+            name: 'should fail to create post with an empty title',
+            invalidData: { title: ' ' },
+          })
         })
 
-        it('should fail to create post with a content length > 100', () => {
-          const longContent = 'To long title'.padEnd(101, '.')
-          const invalidData = {
-            ...newPostData,
-            content: longContent,
-          }
-          return request(app.getHttpServer() as Express)
-            .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
-            .send(invalidData)
-            .expect(400)
+        describe('Content', () => {
+          requestPostTest({
+            name: 'should fail to create post with undefined content',
+            invalidData: { content: undefined },
+          })
+          requestPostTest({
+            name: 'should fail to create post with a content type different from string',
+            invalidData: { content: true },
+          })
+
+          requestPostTest({
+            name: 'should fail to create post with a content length > 100',
+            invalidData: { content: 'To long title'.padEnd(101, '.') },
+          })
+
+          requestPostTest({
+            name: 'should fail to create post with an empty content',
+            invalidData: { content: ' ' },
+          })
         })
 
-        it('should fail to create post with an empty content', () => {
-          const invalidData = {
-            ...newPostData,
-            content: ' ',
-          }
-          return request(app.getHttpServer() as Express)
-            .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
-            .send(invalidData)
-            .expect(400)
-        })
-      })
-
-      describe('Published', () => {
-        it('should fail to create post with undefined published', () => {
-          const invalidData = {
-            ...newPostData,
-            published: undefined,
-          }
-          return request(app.getHttpServer() as Express)
-            .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
-            .send(invalidData)
-            .expect(400)
-        })
-        it('should fail to create post with published type different from boolean', () => {
-          const invalidData = {
-            ...newPostData,
-            published: 'true',
-          }
-          return request(app.getHttpServer() as Express)
-            .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
-            .send(invalidData)
-            .expect(400)
+        describe('Published', () => {
+          requestPostTest({
+            name: 'should fail to create post with published type different from boolean',
+            invalidData: { published: 'true' },
+          })
         })
       })
     })
