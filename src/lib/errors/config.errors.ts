@@ -1,5 +1,5 @@
-import { Environment } from '../dtos/config/config.dto'
-import { configSchema, ConfigSchemaInput } from '../dtos/config/config.dto'
+import { Environment } from '@/lib/types/common.types'
+import { configSchema, ConfigSchemaInput } from '@/lib/dtos/config/config.dto'
 
 export function validate(config: Record<string, any>): Record<string, any> {
   const configuration: ConfigSchemaInput = {
@@ -9,6 +9,10 @@ export function validate(config: Record<string, any>): Record<string, any> {
     auth: { secret: config.JWT_SECRET },
     database: {
       url: config.DATABASE_URL,
+    },
+    test: {
+      email: config.TEST_USER_EMAIL,
+      password: config.TEST_USER_PW,
     },
   }
 

@@ -1,16 +1,19 @@
 import { z } from '@/lib/config/zod'
-
-export enum Environment {
-  Development = 'development',
-  Production = 'production',
-  Test = 'test',
-  Provision = 'provision',
-}
+import { stringOrUndefined } from './preprocess'
+import { Environment } from '@/lib/types/common.types'
 
 const dbConfigValidation = {
   regex: /^mysql:\/\/([^:]+):(.+)@([^@:]+):(\d+)\/(\w+)$/,
   message: 'O format do DATABASE_URL é inválido',
 }
+
+const testConfigValidation = z.strictObject({
+  email: z.preprocess(stringOrUndefined, z.email().or(z.undefined())),
+  password: z.preprocess(
+    stringOrUndefined,
+    z.string().trim().nonempty().or(z.undefined())
+  ),
+})
 
 export const configSchema = z.strictObject({
   nodeEnv: z.enum(Environment).default(Environment.Development),
@@ -24,6 +27,7 @@ export const configSchema = z.strictObject({
       .nonempty()
       .regex(dbConfigValidation.regex, dbConfigValidation.message),
   }),
+  test: testConfigValidation,
 })
 
 export type ConfigSchemaInput = z.input<typeof configSchema>
