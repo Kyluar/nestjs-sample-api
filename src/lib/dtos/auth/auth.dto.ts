@@ -1,10 +1,10 @@
 import { z } from '@/lib/config/zod'
 import { createZodDto } from 'nestjs-zod'
+import { userSchema } from '../user'
 
-export const loginSchema = z.strictObject({
-  email: z.email(),
-  password: z.string().min(10),
-})
+export const loginSchema = z.strictObject(
+  userSchema.pick({ email: true, password: true }).shape
+)
 
 export const loginReturnSchema = z.strictObject({
   accessToken: z.jwt(),

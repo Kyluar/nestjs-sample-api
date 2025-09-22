@@ -6,7 +6,7 @@ import { timestampSchema } from '../common'
 export const createUserSchema = z.strictObject({
   name: z.string().trim().nonempty(),
   email: z.email(),
-  password: z.string(),
+  password: z.string().trim().nonempty(),
 }) satisfies z.ZodType<Prisma.UserCreateInput>
 
 export const updateUserSchema = createUserSchema.partial()
