@@ -6,13 +6,13 @@
 
 */
 -- DropForeignKey
-ALTER TABLE `post` DROP FOREIGN KEY `Post_authorUuid_fkey`;
+ALTER TABLE `Post` DROP FOREIGN KEY `Post_authorUuid_fkey`;
 
 -- DropTable
-DROP TABLE `post`;
+DROP TABLE `Post`;
 
 -- DropTable
-DROP TABLE `user`;
+DROP TABLE `User`;
 
 -- CreateTable
 CREATE TABLE `users` (

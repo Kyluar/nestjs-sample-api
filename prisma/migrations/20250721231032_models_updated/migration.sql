@@ -14,13 +14,13 @@
 
 */
 -- DropForeignKey
-ALTER TABLE `post` DROP FOREIGN KEY `Post_authorId_fkey`;
+ALTER TABLE `Post` DROP FOREIGN KEY `Post_authorId_fkey`;
 
 -- DropIndex
-DROP INDEX `Post_authorId_fkey` ON `post`;
+DROP INDEX `Post_authorId_fkey` ON `Post`;
 
 -- AlterTable
-ALTER TABLE `post` DROP PRIMARY KEY,
+ALTER TABLE `Post` DROP PRIMARY KEY,
     DROP COLUMN `authorId`,
     DROP COLUMN `id`,
     ADD COLUMN `authorUuid` VARCHAR(191) NOT NULL,
@@ -29,7 +29,7 @@ ALTER TABLE `post` DROP PRIMARY KEY,
     ADD PRIMARY KEY (`uuid`);
 
 -- AlterTable
-ALTER TABLE `user` DROP PRIMARY KEY,
+ALTER TABLE `User` DROP PRIMARY KEY,
     DROP COLUMN `id`,
     ADD COLUMN `uuid` VARCHAR(191) NOT NULL,
     MODIFY `name` VARCHAR(191) NOT NULL,
