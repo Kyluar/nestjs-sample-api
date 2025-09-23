@@ -1,7 +1,12 @@
+function formatPath(path: any) {
+  return String(path).replaceAll(',', '.')
+}
+
 function invalidTypeError(iss: any) {
+  const path = formatPath(iss.path)
   return iss.input === undefined
-    ? `Campo ${iss.path} não enviado`
-    : `Campo ${iss.path} deve ser um(a) ${iss.expected}`
+    ? `Campo ${path} não enviado`
+    : `Campo ${path} deve ser um(a) ${iss.expected}`
 }
 
 function sizeError(iss: any) {
@@ -29,7 +34,7 @@ function invalidValueError(iss: any) {
 }
 
 export function zodCustomErrors(iss: any) {
-  let message = `Erro ${iss.code} não tratato no campo ${iss.path}`
+  let message = `Erro ${iss.code} não tratato no campo ${formatPath(iss.path)}`
   switch (iss.code) {
     case 'invalid_type':
       message = invalidTypeError(iss)
