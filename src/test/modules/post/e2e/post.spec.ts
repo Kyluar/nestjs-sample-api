@@ -2,6 +2,7 @@ import * as request from 'supertest'
 import { z } from '@/lib/config/zod'
 import { Test } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { AppModule } from '../../../../app.module'
 import { Express } from 'express'
 import { Post } from '@prisma/client'
@@ -16,6 +17,7 @@ import {
   RequestDataValidationTestParams,
   GetRequestTestParams,
 } from '@/test/types/request.test.types.utils'
+import { TestConfigSchemaOutput } from '@/lib/dtos/config/config.dto'
 
 const postRoutes = {
   base: '/posts',
@@ -23,16 +25,12 @@ const postRoutes = {
   draft: '/posts/drafts',
 }
 
-const credentials = {
-  email: 'gabriel@prisma.io',
-  password: 'gabrielpassword',
-}
-
 const authorUuid: string = 'c98ce012-38bd-4934-9f96-8d2db34a4b7b'
 
 describe('Post', () => {
   let app: INestApplication
   let jwtToken: string
+  let configService: ConfigService
 
   const postGetRequest = (
     params: Omit<GetRequestTestParams, 'getApp' | 'getJwtToken'>
@@ -50,7 +48,10 @@ describe('Post', () => {
     }).compile()
 
     app = moduleRef.createNestApplication()
+    configService = app.get<ConfigService>(ConfigService)
     await app.init()
+
+    const credentials = configService.get<TestConfigSchemaOutput>('test')
 
     const loginResponse: { body: LoginReturnDto } = await request(
       app.getHttpServer() as Express

@@ -5,8 +5,8 @@ import { JwtAuthGuard } from './guards'
 import { UserModule, PostModule, AuthModule, HealthModule } from './modules'
 import { ConfigModule } from '@nestjs/config'
 import { PrismaModule } from 'nestjs-prisma'
-import { envConfiguration, envFilePath } from '@/lib/config/env'
-import { validate } from '@/lib/errors'
+import { envConfiguration, envFilePath } from '@/lib/config/env/configuration'
+import { validate } from '@/lib/config/env/validation'
 
 @Module({
   imports: [

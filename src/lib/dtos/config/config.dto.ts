@@ -1,24 +1,16 @@
 import { z } from '@/lib/config/zod'
-import { stringOrUndefined } from './preprocess'
+import { processToString } from '../common/preprocess'
 import { Environment } from '@/lib/types/common.types'
+import { dbConfigValidation, envVarValidation } from '@/lib/dtos/common'
 
-const dbConfigValidation = {
-  regex: /^mysql:\/\/([^:]+):(.+)@([^@:]+):(\d+)\/(\w+)$/,
-  message: 'O format do DATABASE_URL é inválido',
-}
-
-const testConfigValidation = z.strictObject({
-  email: z.preprocess(stringOrUndefined, z.email().or(z.undefined())),
-  password: z.preprocess(
-    stringOrUndefined,
-    z.string().trim().nonempty().or(z.undefined())
-  ),
+const testConfigSchema = z.strictObject({
+  email: z.preprocess(processToString, z.email()),
+  password: envVarValidation,
 })
 
-export const configSchema = z.strictObject({
-  nodeEnv: z.enum(Environment).default(Environment.Development),
+const configBaseSchema = z.strictObject({
   port: z.coerce.number().nonnegative().default(3000),
-  auth: z.strictObject({ secret: z.coerce.string().trim().nonempty() }),
+  auth: z.strictObject({ secret: envVarValidation }),
   saltRounds: z.coerce.number().nonnegative().lte(99).default(10),
   database: z.strictObject({
     url: z.coerce
@@ -27,8 +19,24 @@ export const configSchema = z.strictObject({
       .nonempty()
       .regex(dbConfigValidation.regex, dbConfigValidation.message),
   }),
-  test: testConfigValidation,
 })
+
+export const configSchema = z.discriminatedUnion('nodeEnv', [
+  configBaseSchema.extend({
+    nodeEnv: z.union([
+      z.literal(Environment.Development),
+      z.literal(Environment.Production),
+      z.literal(Environment.Provision),
+    ]),
+  }),
+
+  configBaseSchema.extend({
+    nodeEnv: z.literal(Environment.Test),
+    test: testConfigSchema,
+  }),
+])
 
 export type ConfigSchemaInput = z.input<typeof configSchema>
 export type ConfigSchemaOutput = z.output<typeof configSchema>
+export type TestConfigSchemaInput = z.input<typeof testConfigSchema>
+export type TestConfigSchemaOutput = z.output<typeof testConfigSchema>
