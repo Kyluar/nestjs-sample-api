@@ -8,6 +8,7 @@ export const loginSchema = z.strictObject(
 
 export const loginReturnSchema = z.strictObject({
   accessToken: z.jwt(),
+  userUuid: z.uuid(),
 })
 
 export type LoginReturnDto = z.infer<typeof loginReturnSchema>

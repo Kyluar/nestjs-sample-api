@@ -25,11 +25,10 @@ const postRoutes = {
   draft: '/posts/drafts',
 }
 
-const authorUuid: string = 'c98ce012-38bd-4934-9f96-8d2db34a4b7b'
-
 describe('Post', () => {
   let app: INestApplication
   let jwtToken: string
+  let authorUuid: string
   let configService: ConfigService
 
   const postGetRequest = (
@@ -60,6 +59,7 @@ describe('Post', () => {
       .send(credentials)
 
     jwtToken = loginResponse.body.accessToken
+    authorUuid = loginResponse.body.userUuid
   })
 
   describe('Authentication', () => {

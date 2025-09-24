@@ -38,6 +38,7 @@ export class AuthService {
     // Step 3: Generate a JWT containing the user's ID and return it
     return loginReturnSchema.parse({
       accessToken: this.jwtService.sign(payload),
+      userUuid: user.uuid,
     })
   }
 }
