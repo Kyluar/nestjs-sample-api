@@ -33,6 +33,7 @@ export class AuthService {
     if (!isMatch) {
       throw new UnauthorizedException('Invalid password')
     }
+
     const payload = { sub: user.uuid }
 
     // Step 3: Generate a JWT containing the user's ID and return it

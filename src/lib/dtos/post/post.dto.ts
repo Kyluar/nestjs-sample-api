@@ -10,6 +10,8 @@ export const createPostSchema = z.strictObject({
   published: z.boolean().default(true),
 }) satisfies z.ZodType<Prisma.PostCreateInput>
 
+export type CreatePostSchemaDto = z.infer<typeof createPostSchema>
+
 export const updatePostSchema = createPostSchema.partial()
 
 export const postSchema = z.strictObject({

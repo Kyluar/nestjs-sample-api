@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing'
 import { PostController } from '@/modules/post/post.controller'
 import { PostService } from '@/modules/post/post.service'
-import { draftMockPosts } from '@/test/mock/post.mock'
+import { draftMockPosts } from 'src/test/mock/post.mock'
 import type { Post } from '@prisma/client'
 
 describe('PostController.getDraftPosts', () => {

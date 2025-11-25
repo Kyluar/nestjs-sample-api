@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing'
 import { PostController } from '@/modules/post/post.controller'
 import { PostService } from '@/modules/post/post.service'
-import { publishedMockPosts } from '@/test/mock/post.mock'
+import { publishedMockPosts } from 'src/test/mock/post.mock'
 
 describe('PostController.getPublishedPosts', () => {
   let postController: PostController

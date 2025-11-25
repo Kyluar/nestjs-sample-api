@@ -1,0 +1,183 @@
+import * as request from 'supertest'
+import { Test } from '@nestjs/testing'
+import { INestApplication } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { AppModule } from '@/app.module'
+import { Express } from 'express'
+import { postSchema } from '@/lib/dtos/post'
+import { LoginReturnDto, loginReturnSchema } from '@/lib/dtos/auth'
+import { CreatePostSchemaDto } from '@/lib/dtos/post'
+import { TestConfigSchemaOutput } from '@/lib/dtos/config/config.dto'
+import { postRoutes } from '@/test/mock'
+
+describe('Module Post: POST Tests', () => {
+  let app: INestApplication
+  let jwtToken: string
+  let configService: ConfigService
+  let loginPayload: LoginReturnDto
+  let postData: CreatePostSchemaDto
+
+  beforeAll(async () => {
+    const moduleRef = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile()
+
+    app = moduleRef.createNestApplication()
+    configService = app.get<ConfigService>(ConfigService)
+    await app.init()
+
+    const credentials = configService.get<TestConfigSchemaOutput>('test')
+
+    loginPayload = (
+      await request(app.getHttpServer() as Express)
+        .post('/auth/login')
+        .send(credentials)
+    ).body
+
+    jwtToken = loginPayload.accessToken
+
+    postData = {
+      authorUuid: loginPayload.userUuid,
+      title: 'Test Post Title',
+      content: 'This is a test post content',
+      published: true,
+    }
+  })
+
+  describe('Authentication', () => {
+    it('should be authenticated', () => {
+      expect(loginReturnSchema.safeParse(loginPayload).success).toBe(true)
+    })
+  })
+
+  describe('Success Cases', () => {
+    it('should create a new post', async () => {
+      await request(app.getHttpServer())
+        .post(postRoutes.base)
+        .set('Authorization', `Bearer ${jwtToken}`)
+        .send(postData)
+        .expect((res) => {
+          const { body, statusCode } = res
+          expect(postSchema.safeParse(body).success).toBe(true)
+          expect(statusCode).toBe(201)
+        })
+    })
+  })
+
+  describe('Fail Cases', () => {
+    it('should fail to create post without authentication', async () => {
+      await request(app.getHttpServer())
+        .post(postRoutes.base)
+        .send(postData)
+        .expect(401)
+    })
+
+    describe('Validation', () => {
+      describe('Title', () => {
+        it('should fail to create post with undefined title', async () => {
+          const invalidData = { ...postData, title: undefined }
+
+          await request(app.getHttpServer())
+            .post(postRoutes.base)
+            .set('Authorization', `Bearer ${jwtToken}`)
+            .send(invalidData)
+            .expect(400)
+        })
+
+        it('should fail to create post with a title type different from string', async () => {
+          const invalidData = { ...postData, title: true }
+
+          await request(app.getHttpServer())
+            .post(postRoutes.base)
+            .set('Authorization', `Bearer ${jwtToken}`)
+            .send(invalidData)
+            .expect(400)
+        })
+
+        it('should fail to create post with a title length > 30', async () => {
+          const invalidData = {
+            ...postData,
+            title: 'To long title'.padEnd(31, '.'),
+          }
+
+          await request(app.getHttpServer())
+            .post(postRoutes.base)
+            .set('Authorization', `Bearer ${jwtToken}`)
+            .send(invalidData)
+            .expect(400)
+        })
+
+        it('should fail to create post with an empty title', async () => {
+          const invalidData = { ...postData, title: ' ' }
+
+          await request(app.getHttpServer())
+            .post(postRoutes.base)
+            .set('Authorization', `Bearer ${jwtToken}`)
+            .send(invalidData)
+            .expect(400)
+        })
+      })
+
+      describe('Content', () => {
+        it('should fail to create post with undefined content', async () => {
+          const invalidData = { ...postData, content: undefined }
+
+          await request(app.getHttpServer())
+            .post(postRoutes.base)
+            .set('Authorization', `Bearer ${jwtToken}`)
+            .send(invalidData)
+            .expect(400)
+        })
+
+        it('should fail to create post with a content type different from string', async () => {
+          const invalidData = { ...postData, content: true }
+
+          await request(app.getHttpServer())
+            .post(postRoutes.base)
+            .set('Authorization', `Bearer ${jwtToken}`)
+            .send(invalidData)
+            .expect(400)
+        })
+
+        it('should fail to create post with a content length > 100', async () => {
+          const invalidData = {
+            ...postData,
+            content: 'To long title'.padEnd(101, '.'),
+          }
+
+          await request(app.getHttpServer())
+            .post(postRoutes.base)
+            .set('Authorization', `Bearer ${jwtToken}`)
+            .send(invalidData)
+            .expect(400)
+        })
+
+        it('should fail to create post with an empty content', async () => {
+          const invalidData = { ...postData, content: ' ' }
+
+          await request(app.getHttpServer())
+            .post(postRoutes.base)
+            .set('Authorization', `Bearer ${jwtToken}`)
+            .send(invalidData)
+            .expect(400)
+        })
+      })
+
+      describe('Published', () => {
+        it('should fail to create post with published type different from boolean', async () => {
+          const invalidData = { ...postData, published: 'true' }
+
+          await request(app.getHttpServer())
+            .post(postRoutes.base)
+            .set('Authorization', `Bearer ${jwtToken}`)
+            .send(invalidData)
+            .expect(400)
+        })
+      })
+    })
+  })
+
+  afterAll(async () => {
+    await app.close()
+  })
+})

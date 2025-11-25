@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing'
 import { PostController } from '@/modules/post/post.controller'
 import { PostService } from '@/modules/post/post.service'
 import { CreatePostDto } from '@/lib/dtos/post'
-import { createPostData } from '@/test/mock'
+import { createPostData } from 'src/test/mock'
 
 describe('PostController.createPost', () => {
   let postController: PostController

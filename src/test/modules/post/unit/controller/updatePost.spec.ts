@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing'
 import { PostController } from '@/modules/post/post.controller'
 import { PostService } from '@/modules/post/post.service'
-import { draftMockPosts } from '@/test/mock'
+import { draftMockPosts } from 'src/test/mock'
 import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { Post } from '@prisma/client'
 
