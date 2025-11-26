@@ -1,40 +1,23 @@
 import * as request from 'supertest'
-import { Test } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
-import { AppModule } from '@/app.module'
-import { Express } from 'express'
 import { postSchema } from '@/lib/dtos/post'
 import { LoginReturnDto, loginReturnSchema } from '@/lib/dtos/auth'
 import { CreatePostSchemaDto } from '@/lib/dtos/post'
-import { TestConfigSchemaOutput } from '@/lib/dtos/config/config.dto'
 import { postRoutes } from '@/test/mock'
+import { createAuthenticatedApp } from '@/test/utils/setup'
 
 describe('Module Post: POST Tests', () => {
   let app: INestApplication
   let jwtToken: string
-  let configService: ConfigService
   let loginPayload: LoginReturnDto
   let postData: CreatePostSchemaDto
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile()
+    const context = await createAuthenticatedApp()
 
-    app = moduleRef.createNestApplication()
-    configService = app.get<ConfigService>(ConfigService)
-    await app.init()
-
-    const credentials = configService.get<TestConfigSchemaOutput>('test')
-
-    loginPayload = (
-      await request(app.getHttpServer() as Express)
-        .post('/auth/login')
-        .send(credentials)
-    ).body
-
-    jwtToken = loginPayload.accessToken
+    app = context.app
+    jwtToken = context.jwtToken
+    loginPayload = context.loginPayload
 
     postData = {
       authorUuid: loginPayload.userUuid,
