@@ -1,9 +1,28 @@
 import * as bcrypt from 'bcrypt'
 import { Prisma, PrismaClient } from '@prisma/client'
 
-const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS ?? '10', 10)
+const SALT_ROUNDS: number = parseInt(process.env.SALT_ROUNDS ?? '10', 10)
+const TEST_USER_EMAIL: string = String(
+  process.env.TEST_USER_EMAIL ?? 'testuser@prisma.io'
+)
+const TEST_USER_PW: string = String(
+  process.env.TEST_USER_PW ?? 'testuserpassword'
+)
 
 const seedUsers: Prisma.UserCreateInput[] = [
+  {
+    name: 'Test User',
+    email: TEST_USER_EMAIL,
+    password: TEST_USER_PW,
+    posts: {
+      create: {
+        title: 'Extensions',
+        content:
+          'https://www.prisma.io/docs/orm/prisma-client/client-extensions',
+        published: false,
+      },
+    },
+  },
   {
     email: 'gabriel@prisma.io',
     name: 'Gabriel',
@@ -59,7 +78,10 @@ async function getSeedUsers(): Promise<Prisma.UserCreateInput[]> {
   )
 }
 
-export async function seed(prisma: PrismaClient): Promise<void> {
+export async function seed(
+  prisma: PrismaClient,
+  log: boolean = true
+): Promise<void> {
   const seedUsers = await getSeedUsers()
 
   const requests = seedUsers.map((u) =>
@@ -68,6 +90,8 @@ export async function seed(prisma: PrismaClient): Promise<void> {
 
   const users = await prisma.$transaction(requests)
 
-  console.log('Database seeded successfully!')
-  console.log(users)
+  if (log) {
+    console.info(users)
+    console.info('Database seeded successfully!')
+  }
 }

@@ -1,43 +1,36 @@
 import * as request from 'supertest'
 import { INestApplication } from '@nestjs/common'
 import { postSchema } from '@/lib/dtos/post'
-import { LoginReturnDto, loginReturnSchema } from '@/lib/dtos/auth'
 import { CreatePostSchemaDto } from '@/lib/dtos/post'
 import { postRoutes } from '@/test/mock'
-import { createAuthenticatedApp } from '@/test/utils/setup'
+import { setupTestEnvironment, teardownTestEnvironment } from '@/test/utils'
 
 describe('Module Post: POST Tests', () => {
   let app: INestApplication
-  let jwtToken: string
-  let loginPayload: LoginReturnDto
+  let accessToken: string
+  let userUuid: string
   let postData: CreatePostSchemaDto
 
   beforeAll(async () => {
-    const context = await createAuthenticatedApp()
+    const context = await setupTestEnvironment()
 
     app = context.app
-    jwtToken = context.jwtToken
-    loginPayload = context.loginPayload
+    accessToken = context.loginPayload.accessToken
+    userUuid = context.loginPayload.userUuid
 
     postData = {
-      authorUuid: loginPayload.userUuid,
+      authorUuid: userUuid,
       title: 'Test Post Title',
       content: 'This is a test post content',
       published: true,
     }
   })
 
-  describe('Authentication', () => {
-    it('should be authenticated', () => {
-      expect(loginReturnSchema.safeParse(loginPayload).success).toBe(true)
-    })
-  })
-
   describe('Success Cases', () => {
     it('should create a new post', async () => {
       await request(app.getHttpServer())
         .post(postRoutes.base)
-        .set('Authorization', `Bearer ${jwtToken}`)
+        .set('Authorization', `Bearer ${accessToken}`)
         .send(postData)
         .expect((res) => {
           const { body, statusCode } = res
@@ -62,7 +55,7 @@ describe('Module Post: POST Tests', () => {
 
           await request(app.getHttpServer())
             .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
+            .set('Authorization', `Bearer ${accessToken}`)
             .send(invalidData)
             .expect(400)
         })
@@ -72,7 +65,7 @@ describe('Module Post: POST Tests', () => {
 
           await request(app.getHttpServer())
             .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
+            .set('Authorization', `Bearer ${accessToken}`)
             .send(invalidData)
             .expect(400)
         })
@@ -85,7 +78,7 @@ describe('Module Post: POST Tests', () => {
 
           await request(app.getHttpServer())
             .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
+            .set('Authorization', `Bearer ${accessToken}`)
             .send(invalidData)
             .expect(400)
         })
@@ -95,7 +88,7 @@ describe('Module Post: POST Tests', () => {
 
           await request(app.getHttpServer())
             .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
+            .set('Authorization', `Bearer ${accessToken}`)
             .send(invalidData)
             .expect(400)
         })
@@ -107,7 +100,7 @@ describe('Module Post: POST Tests', () => {
 
           await request(app.getHttpServer())
             .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
+            .set('Authorization', `Bearer ${accessToken}`)
             .send(invalidData)
             .expect(400)
         })
@@ -117,7 +110,7 @@ describe('Module Post: POST Tests', () => {
 
           await request(app.getHttpServer())
             .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
+            .set('Authorization', `Bearer ${accessToken}`)
             .send(invalidData)
             .expect(400)
         })
@@ -130,7 +123,7 @@ describe('Module Post: POST Tests', () => {
 
           await request(app.getHttpServer())
             .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
+            .set('Authorization', `Bearer ${accessToken}`)
             .send(invalidData)
             .expect(400)
         })
@@ -140,7 +133,7 @@ describe('Module Post: POST Tests', () => {
 
           await request(app.getHttpServer())
             .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
+            .set('Authorization', `Bearer ${accessToken}`)
             .send(invalidData)
             .expect(400)
         })
@@ -152,7 +145,7 @@ describe('Module Post: POST Tests', () => {
 
           await request(app.getHttpServer())
             .post(postRoutes.base)
-            .set('Authorization', `Bearer ${jwtToken}`)
+            .set('Authorization', `Bearer ${accessToken}`)
             .send(invalidData)
             .expect(400)
         })
@@ -161,6 +154,6 @@ describe('Module Post: POST Tests', () => {
   })
 
   afterAll(async () => {
-    await app.close()
+    await teardownTestEnvironment(app)
   })
 })

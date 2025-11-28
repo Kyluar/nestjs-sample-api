@@ -1,28 +1,19 @@
 import * as request from 'supertest'
 import { INestApplication } from '@nestjs/common'
 import { Post } from '@prisma/client'
-import { LoginReturnDto, loginReturnSchema } from '@/lib/dtos/auth'
 import { postSchema } from '@/lib/dtos/post'
 import { postRoutes } from '@/test/mock'
-import { createAuthenticatedApp } from '@/test/utils/setup'
+import { setupTestEnvironment, teardownTestEnvironment } from '@/test/utils'
 
 describe('Module Post: GET Tests', () => {
   let app: INestApplication
   let jwtToken: string
-  let loginPayload: LoginReturnDto
 
   beforeAll(async () => {
-    const context = await createAuthenticatedApp()
+    const context = await setupTestEnvironment()
 
     app = context.app
-    jwtToken = context.jwtToken
-    loginPayload = context.loginPayload
-  })
-
-  describe('Authentication', () => {
-    it('should be authenticated', () => {
-      expect(loginReturnSchema.safeParse(loginPayload).success).toBe(true)
-    })
+    jwtToken = context.loginPayload.accessToken
   })
 
   describe(`Success cases`, () => {
@@ -72,6 +63,6 @@ describe('Module Post: GET Tests', () => {
   })
 
   afterAll(async () => {
-    await app.close()
+    await teardownTestEnvironment(app)
   })
 })
