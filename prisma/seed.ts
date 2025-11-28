@@ -1,18 +1,10 @@
 import { PrismaClient } from '@prisma/client'
-import { getSeedUsers } from '../src/lib/config/seed/data'
+import { seed } from '../src/lib/config/prisma/seed'
 
 const prisma = new PrismaClient()
 
 async function main() {
-  const seedUsers = await getSeedUsers()
-
-  const requests = seedUsers.map((u) =>
-    prisma.user.upsert({ where: { email: u.email }, update: {}, create: u })
-  )
-
-  const users = await prisma.$transaction(requests)
-
-  console.log(users)
+  await seed(prisma)
 }
 
 main()

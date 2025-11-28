@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt'
-import { Prisma } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
 
 const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS ?? '10', 10)
 
@@ -50,11 +50,24 @@ const seedUsers: Prisma.UserCreateInput[] = [
   },
 ]
 
-export async function getSeedUsers(): Promise<Prisma.UserCreateInput[]> {
+async function getSeedUsers(): Promise<Prisma.UserCreateInput[]> {
   return Promise.all(
     seedUsers.map(async (u) => ({
       ...u,
       password: await bcrypt.hash(u.password, SALT_ROUNDS),
     }))
   )
+}
+
+export async function seed(prisma: PrismaClient): Promise<void> {
+  const seedUsers = await getSeedUsers()
+
+  const requests = seedUsers.map((u) =>
+    prisma.user.upsert({ where: { email: u.email }, update: {}, create: u })
+  )
+
+  const users = await prisma.$transaction(requests)
+
+  console.log('Database seeded successfully!')
+  console.log(users)
 }
