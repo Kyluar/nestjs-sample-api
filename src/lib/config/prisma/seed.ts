@@ -1,28 +1,9 @@
 import * as bcrypt from 'bcrypt'
 import { Prisma, PrismaClient } from '@prisma/client'
-
-const SALT_ROUNDS: number = parseInt(process.env.SALT_ROUNDS ?? '10', 10)
-const TEST_USER_EMAIL: string = String(
-  process.env.TEST_USER_EMAIL ?? 'testuser@prisma.io'
-)
-const TEST_USER_PW: string = String(
-  process.env.TEST_USER_PW ?? 'testuserpassword'
-)
+import { Environment } from '@/lib/types/common.types'
+import { saltRoundsSchema } from '@/lib/dtos/config/vars.dto'
 
 const seedUsers: Prisma.UserCreateInput[] = [
-  {
-    name: 'Test User',
-    email: TEST_USER_EMAIL,
-    password: TEST_USER_PW,
-    posts: {
-      create: {
-        title: 'Extensions',
-        content:
-          'https://www.prisma.io/docs/orm/prisma-client/client-extensions',
-        published: false,
-      },
-    },
-  },
   {
     email: 'gabriel@prisma.io',
     name: 'Gabriel',
@@ -67,13 +48,36 @@ const seedUsers: Prisma.UserCreateInput[] = [
       ],
     },
   },
+  ...(process.env.NODE_ENV === Environment.Test &&
+  process.env.TEST_USER_EMAIL &&
+  process.env.TEST_USER_PASSWORD &&
+  process.env.TEST_USER_NAME
+    ? [
+        {
+          name: process.env.TEST_USER_NAME,
+          email: process.env.TEST_USER_EMAIL,
+          password: process.env.TEST_USER_PASSWORD,
+          posts: {
+            create: {
+              title: 'Extensions',
+              content:
+                'https://www.prisma.io/docs/orm/prisma-client/client-extensions',
+              published: false,
+            },
+          },
+        },
+      ]
+    : []),
 ]
 
-async function getSeedUsers(): Promise<Prisma.UserCreateInput[]> {
+async function hashUsersPassword(
+  users: Prisma.UserCreateInput[],
+  saltOrRounds: string | number
+): Promise<Prisma.UserCreateInput[]> {
   return Promise.all(
-    seedUsers.map(async (u) => ({
+    users.map(async (u) => ({
       ...u,
-      password: await bcrypt.hash(u.password, SALT_ROUNDS),
+      password: await bcrypt.hash(u.password, saltOrRounds),
     }))
   )
 }
@@ -82,9 +86,11 @@ export async function seed(
   prisma: PrismaClient,
   log: boolean = true
 ): Promise<void> {
-  const seedUsers = await getSeedUsers()
+  const saltRounds = saltRoundsSchema.parse(process.env.SALT_ROUNDS)
 
-  const requests = seedUsers.map((u) =>
+  const hashedSeedUsers = await hashUsersPassword(seedUsers, saltRounds)
+
+  const requests = hashedSeedUsers.map((u) =>
     prisma.user.upsert({ where: { email: u.email }, update: {}, create: u })
   )
 

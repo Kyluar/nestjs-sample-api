@@ -5,7 +5,7 @@ import { Response } from 'supertest'
 
 export async function login(
   app: INestApplication,
-  credentials: TestConfigSchemaOutput
+  credentials: Omit<TestConfigSchemaOutput, 'name'>
 ): Promise<Response> {
   return await request(app.getHttpServer())
     .post('/auth/login')

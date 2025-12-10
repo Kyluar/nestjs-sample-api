@@ -1,7 +1,6 @@
 import { z } from '@/lib/config/zod'
-import { dbUrlValidation, processToString } from '@/lib/dtos/common'
-
-const envVarSchema = z.preprocess(processToString, z.string().trim().nonempty())
+import { dbUrlValidation } from '@/lib/dtos/common'
+import { createUserSchema } from '../user'
 
 export const saltRoundsSchema = z.coerce
   .number()
@@ -18,8 +17,9 @@ export const databaseConfigSchema = z.strictObject({
 })
 
 export const testConfigSchema = z.strictObject({
-  email: z.preprocess(processToString, z.email()),
-  password: envVarSchema,
+  ...createUserSchema.pick({ name: true, email: true, password: true }).shape,
 })
 
-export const authConfigSchema = z.strictObject({ secret: envVarSchema })
+export const authConfigSchema = z.strictObject({
+  secret: z.string().trim().nonempty(),
+})

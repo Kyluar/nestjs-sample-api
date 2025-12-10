@@ -30,9 +30,14 @@ async function createAuthenticatedApp(): Promise<AppContext> {
 
   const configService = app.get<ConfigService>(ConfigService)
 
-  const credentials = configService.get<TestConfigSchemaOutput>('test')
+  const testConfig = configService.get<TestConfigSchemaOutput>('test')
 
-  if (!credentials) throw new Error('Test credentials undefined')
+  if (!testConfig) throw new Error('Test credentials undefined')
+
+  const credentials: Omit<TestConfigSchemaOutput, 'name'> = {
+    email: testConfig.email,
+    password: testConfig.password,
+  }
 
   const loginResponse = await login(app, credentials)
 

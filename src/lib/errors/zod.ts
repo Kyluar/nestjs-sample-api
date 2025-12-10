@@ -10,27 +10,30 @@ function invalidTypeError(iss: any) {
 }
 
 function sizeError(iss: any) {
+  const path = formatPath(iss.path)
   if (iss.input !== '') {
     switch (iss.code) {
       case 'too_small':
         return iss.origin === 'string'
-          ? `Campo ${iss.path} deve ter no mínimo ${iss.minimum} caractere(s)`
-          : `Campo ${iss.path} deve ser maior que ${iss.minimum}`
+          ? `Campo ${path} deve ter no mínimo ${iss.minimum} caractere(s)`
+          : `Campo ${path} deve ser maior que ${iss.minimum}`
       case 'too_big':
         return iss.origin === 'string'
-          ? `Campo ${iss.path} deve ter no máximo ${iss.maximum} caractere(s)`
-          : `Campo ${iss.path} deve ser menor que ${iss.maximum}`
+          ? `Campo ${path} deve ter no máximo ${iss.maximum} caractere(s)`
+          : `Campo ${path} deve ser menor que ${iss.maximum}`
     }
   }
-  return `Campo ${iss.path} não pode ser vazio`
+  return `Campo ${path} não pode ser vazio`
 }
 
 function invalidFormatError(iss: any) {
-  return `Campo ${iss.path} não é um ${iss.format} válido`
+  const path = formatPath(iss.path)
+  return `Campo ${path} não é um ${iss.format} válido`
 }
 
 function invalidValueError(iss: any) {
-  return `Campo ${iss.path} é inválido, precisa ser: ${iss.values.join(', ')}`
+  const path = formatPath(iss.path)
+  return `Campo ${path} é inválido, precisa ser: ${iss.values.join(', ')}`
 }
 
 export function zodCustomErrors(iss: any) {

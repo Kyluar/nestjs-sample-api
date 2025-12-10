@@ -14,8 +14,9 @@ export function getConfig(config: Record<string, any>): ConfigSchemaOutput {
     },
     ...(nodeEnv === Environment.Test && {
       test: {
+        name: config.TEST_USER_NAME as string,
         email: config.TEST_USER_EMAIL as string,
-        password: config.TEST_USER_PW as string,
+        password: config.TEST_USER_PASSWORD as string,
       },
     }),
   }
