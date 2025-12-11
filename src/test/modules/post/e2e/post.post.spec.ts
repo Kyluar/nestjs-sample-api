@@ -33,9 +33,9 @@ describe('Module Post: POST Tests', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send(postData)
         .expect((res) => {
-          const { body, statusCode } = res
-          expect(postSchema.safeParse(body).success).toBe(true)
-          expect(statusCode).toBe(201)
+          const post = res.body
+          expect(postSchema.safeParse(post).success).toBe(true)
+          expect(201)
         })
     })
   })
@@ -48,7 +48,72 @@ describe('Module Post: POST Tests', () => {
         .expect(401)
     })
 
+    it('should fail to create post without fields', async () => {
+      await request(app.getHttpServer())
+        .post(postRoutes.base)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(400)
+    })
+
+    it('should fail to create post with addicional fields', async () => {
+      await request(app.getHttpServer())
+        .post(postRoutes.base)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ ...postData, invalid: true })
+        .expect(400)
+    })
+
+    it('should fail to create post with required fields missing', async () => {
+      const { title, authorUuid, ...incompletePostData } = postData
+      await request(app.getHttpServer())
+        .post(postRoutes.base)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(incompletePostData)
+        .expect(400)
+    })
+
     describe('Validation', () => {
+      describe('Author Uuid', () => {
+        it('should fail to create post whose authorUuid is undefined', async () => {
+          const invalidData = { ...postData, authorUuid: undefined }
+
+          await request(app.getHttpServer())
+            .post(postRoutes.base)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send(invalidData)
+            .expect(400)
+        })
+        it('should fail to create a post whose authorUuid is not an uuid', async () => {
+          const invalidData = { ...postData, authorUuid: '999.999.999-99' }
+
+          await request(app.getHttpServer())
+            .post(postRoutes.base)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send(invalidData)
+            .expect(400)
+        })
+
+        it('should fail to create post whose authorUuid is not a string', async () => {
+          const invalidData = { ...postData, authorUuid: true }
+
+          await request(app.getHttpServer())
+            .post(postRoutes.base)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send(invalidData)
+            .expect(400)
+        })
+
+        it('should fail to create post whose authorUuid is an empty string', async () => {
+          const invalidData = { ...postData, authorUuid: ' ' }
+
+          await request(app.getHttpServer())
+            .post(postRoutes.base)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .send(invalidData)
+            .expect(400)
+        })
+      })
+
       describe('Title', () => {
         it('should fail to create post with undefined title', async () => {
           const invalidData = { ...postData, title: undefined }

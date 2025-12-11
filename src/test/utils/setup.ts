@@ -7,6 +7,8 @@ import { LoginReturnDto, loginReturnSchema } from '@/lib/dtos/auth'
 import { seed, clean } from '@/lib/config/prisma'
 import { PrismaClient } from '@prisma/client'
 import { login } from './login'
+import { HttpAdapterHost } from '@nestjs/core'
+import { PrismaClientExceptionFilter } from '@/lib/filters'
 
 export type AppContext = {
   app: INestApplication
@@ -19,6 +21,10 @@ async function createApp(): Promise<INestApplication> {
   }).compile()
 
   const app = moduleRef.createNestApplication()
+
+  const { httpAdapter } = app.get(HttpAdapterHost)
+
+  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter))
 
   await app.init()
 
