@@ -18,9 +18,8 @@
     "test:cov": "dotenv -e .env.test -- jest --coverage -i",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "dotenv -e .env.test -- jest --config ./test/jest-e2e.json -i",
-    "migrate:dev": "dotenv -e .env.development -- npx prisma migrate dev",
-    "seed:dev": "dotenv -e .env.development -- npx prisma db seed",
-    "migrate:test": "dotenv -e .env.test -- npx prisma migrate dev"
+    "prisma:dev": "dotenv -e .env.development -- npx prisma",
+    "prisma:test": "dotenv -e .env.test -- npx prisma"
   },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",
@@ -82,6 +81,7 @@
       "json",
       "ts"
     ],
+    "testEnvironment": "node",
     "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
@@ -91,7 +91,14 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/",
+      ".d.ts"
+    ],
+    "testPathIgnorePatterns": [
+      "/dist/"
+    ],
     "moduleNameMapper": {
       "^@/test/(.*)$": "<rootDir>/test/$1",
       "^@/(.*)$": "<rootDir>/src/$1"
