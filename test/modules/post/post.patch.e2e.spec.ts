@@ -2,12 +2,12 @@ import * as request from 'supertest'
 import { INestApplication } from '@nestjs/common'
 import { Post } from '@prisma/client'
 import { postSchema, CreatePostSchemaDto } from '@/lib/dtos/post'
-import { postRoutes } from '@/test/mock'
-import { setupTestEnvironment, teardownTestEnvironment } from '@/test/utils'
+import { postRoute } from '@/test/lib/routes'
+import { setupTestEnvironment, teardownTestEnvironment } from '@/test/lib/utils'
 
-describe('Module Post: PATCH Tests', () => {
+describe('Module Post: E2E PATCH Tests', () => {
   let app: INestApplication
-  let jwtToken: string
+  let accessToken: string
   let existingPostUuid: string
   let patchPostData: Partial<CreatePostSchemaDto>
 
@@ -15,12 +15,12 @@ describe('Module Post: PATCH Tests', () => {
     const context = await setupTestEnvironment()
 
     app = context.app
-    jwtToken = context.loginPayload.accessToken
+    accessToken = context.loginPayload.accessToken
 
     existingPostUuid = (
       await request(app.getHttpServer())
-        .get(postRoutes.feed)
-        .set('Authorization', `Bearer ${jwtToken}`)
+        .get(postRoute.feed)
+        .set('Authorization', `Bearer ${accessToken}`)
     ).body[0].uuid
 
     patchPostData = {
@@ -31,11 +31,11 @@ describe('Module Post: PATCH Tests', () => {
   })
 
   describe(`Success cases`, () => {
-    describe(`${postRoutes.base}/uuid`, () => {
+    describe(`${postRoute.base}/uuid`, () => {
       it(`should update a post`, async () => {
         await request(app.getHttpServer())
-          .patch(`${postRoutes.base}/${existingPostUuid}`)
-          .set('Authorization', `Bearer ${jwtToken}`)
+          .patch(`${postRoute.base}/${existingPostUuid}`)
+          .set('Authorization', `Bearer ${accessToken}`)
           .send(patchPostData)
           .expect((res) => {
             const post = res.body as Post
@@ -50,24 +50,24 @@ describe('Module Post: PATCH Tests', () => {
   })
 
   describe(`Fail cases`, () => {
-    describe(`${postRoutes.base}/uuid`, () => {
+    describe(`${postRoute.base}/uuid`, () => {
       it(`should fail when not authenticated`, async () => {
         await request(app.getHttpServer())
-          .patch(`${postRoutes.base}/${existingPostUuid}`)
+          .patch(`${postRoute.base}/${existingPostUuid}`)
           .send(patchPostData)
           .expect(401)
       })
-      it(`should fail when no uuid is passed`, async () => {
+      it(`should fail when wrong uuid is passed`, async () => {
         await request(app.getHttpServer())
-          .patch(`${postRoutes.base}/wrongUuid`)
-          .set('Authorization', `Bearer ${jwtToken}`)
+          .patch(`${postRoute.base}/wrongUuid`)
+          .set('Authorization', `Bearer ${accessToken}`)
           .send(patchPostData)
           .expect(400)
       })
       it(`should fail when uuid is not associated with a post`, async () => {
         await request(app.getHttpServer())
-          .patch(`${postRoutes.base}/550e8400-e29b-41d4-a716-446655440000`)
-          .set('Authorization', `Bearer ${jwtToken}`)
+          .patch(`${postRoute.base}/550e8400-e29b-41d4-a716-446655440000`)
+          .set('Authorization', `Bearer ${accessToken}`)
           .send(patchPostData)
           .expect(404)
       })

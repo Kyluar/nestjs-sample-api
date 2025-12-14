@@ -12,9 +12,9 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
+      "@/test/*": ["test/*"],
       "@/lib/*": ["src/lib/*"],
-      "@/modules/*": ["src/modules/*"],
-      "@/test/*": ["src/test/*"]
+      "@/modules/*": ["src/modules/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
