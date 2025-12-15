@@ -28,7 +28,7 @@ export class UserController implements IUserController {
   getUserByUuid(
     @Param('uuid', ParseUUIDPipe) uuid: string
   ): Promise<UserModel> {
-    return this.getUserByUuid(uuid)
+    return this.service.getUserByUuid(uuid)
   }
 
   @Post()
