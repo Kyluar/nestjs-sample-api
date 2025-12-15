@@ -57,6 +57,19 @@ describe('Module Post: E2E PATCH Tests', () => {
           .send(patchPostData)
           .expect(401)
       })
+      it('should fail to create post without fields', async () => {
+        await request(app.getHttpServer())
+          .post(postRoute.base)
+          .set('Authorization', `Bearer ${accessToken}`)
+          .expect(400)
+      })
+      it('should fail to create post with addicional fields', async () => {
+        await request(app.getHttpServer())
+          .post(postRoute.base)
+          .set('Authorization', `Bearer ${accessToken}`)
+          .send({ ...patchPostData, invalid: true })
+          .expect(400)
+      })
       it(`should fail when wrong uuid is passed`, async () => {
         await request(app.getHttpServer())
           .patch(`${postRoute.base}/wrongUuid`)
