@@ -1,7 +1,7 @@
 import * as request from 'supertest'
 import { INestApplication } from '@nestjs/common'
 import { postSchema } from '@/lib/dtos/post'
-import { CreatePostSchemaDto } from '@/lib/dtos/post'
+import { CreatePostDtoType } from '@/lib/dtos/post'
 import { postRoute } from '@/test/lib/routes'
 import { setupTestEnvironment, teardownTestEnvironment } from '@/test/lib/utils'
 import { Post } from '@prisma/client'
@@ -10,7 +10,7 @@ describe('Module Post: E2E POST Tests', () => {
   let app: INestApplication
   let accessToken: string
   let userUuid: string
-  let postData: CreatePostSchemaDto
+  let postData: CreatePostDtoType
 
   beforeAll(async () => {
     const context = await setupTestEnvironment()
