@@ -1,5 +1,9 @@
 import { Prisma, User } from '@prisma/client'
-import { CreateUserDto, UpdateUserDto } from '@/lib/dtos/user'
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  UserResponseDtoType,
+} from '@/lib/dtos/user'
 
 export type GetUsersParams = {
   skip?: number
@@ -17,7 +21,7 @@ export type UpdateUserParams = {
 export interface IUserRepository {
   user(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<User>
   users(params: GetUsersParams): Promise<User[]>
-  createUser(data: Prisma.UserCreateInput): Promise<User>
+  createUser(data: Prisma.UserCreateInput): Promise<UserResponseDtoType>
   updateUser(params: UpdateUserParams): Promise<User>
   deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User>
 }
@@ -25,14 +29,14 @@ export interface IUserRepository {
 export interface IUserService {
   getUsers(): Promise<User[]>
   getUserByUuid(uuid: string): Promise<User>
-  createUser(data: Prisma.UserCreateInput): Promise<User>
+  createUser(data: Prisma.UserCreateInput): Promise<UserResponseDtoType>
   updateUserByUuid(uuid: string, data: Prisma.UserUpdateInput): Promise<User>
   deleteUserByUuid(uuid: string): Promise<User>
 }
 
 export interface IUserController {
   getUsers(): Promise<User[]>
-  createUser(userData: CreateUserDto): Promise<User>
+  createUser(userData: CreateUserDto): Promise<UserResponseDtoType>
   getUserByUuid(uuid: string): Promise<User>
   updateUser(uuid: string, partialUserDto: UpdateUserDto): Promise<User>
   deleteUser(uuid: string): Promise<User>

@@ -6,6 +6,7 @@ import {
 import { Injectable } from '@nestjs/common'
 import { Prisma, User } from '@prisma/client'
 import { PrismaService } from 'nestjs-prisma'
+import { UserResponseDtoType } from '@/lib/dtos/user'
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -19,8 +20,8 @@ export class UserRepository implements IUserRepository {
     return this.prisma.user.findMany({ ...params })
   }
 
-  createUser(data: Prisma.UserCreateInput): Promise<User> {
-    return this.prisma.user.create({ data })
+  createUser(data: Prisma.UserCreateInput): Promise<UserResponseDtoType> {
+    return this.prisma.user.create({ data, omit: { password: true } })
   }
 
   updateUser(params: UpdateUserParams): Promise<User> {

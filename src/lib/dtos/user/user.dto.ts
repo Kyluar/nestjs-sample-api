@@ -8,6 +8,7 @@ export const createUserSchema = z.strictObject({
   email: z.email(),
   password: z.string().trim().nonempty(),
 }) satisfies z.ZodType<Prisma.UserCreateInput>
+export type CreateUserDtoType = z.infer<typeof createUserSchema>
 
 export const updateUserSchema = createUserSchema.partial()
 
@@ -16,6 +17,11 @@ export const userSchema = z.strictObject({
   ...createUserSchema.shape,
   ...timestampSchema.shape,
 }) satisfies z.ZodType<User>
+
+export const userResponseSchema = z.strictObject(
+  userSchema.omit({ password: true }).shape
+)
+export type UserResponseDtoType = z.infer<typeof userResponseSchema>
 
 export class CreateUserDto extends createZodDto(createUserSchema) {}
 export class UpdateUserDto extends createZodDto(updateUserSchema) {}

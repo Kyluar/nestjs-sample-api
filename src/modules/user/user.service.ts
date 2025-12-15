@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config'
 import * as bcrypt from 'bcrypt'
 import { IUserService } from '@/lib/types/modules/user'
 import { UserRepository } from './user.repository'
+import { UserResponseDtoType } from '@/lib/dtos/user'
 
 @Injectable()
 export class UsersService implements IUserService {
@@ -28,7 +29,7 @@ export class UsersService implements IUserService {
     return this.repository.deleteUser({ uuid })
   }
 
-  async createUser(data: Prisma.UserCreateInput): Promise<User> {
+  async createUser(data: Prisma.UserCreateInput): Promise<UserResponseDtoType> {
     data.password = await this.hashPassword(data.password)
     return this.repository.createUser(data)
   }
