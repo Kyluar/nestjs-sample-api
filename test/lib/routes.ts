@@ -3,3 +3,7 @@ export enum postRoute {
   feed = '/posts/feed',
   draft = '/posts/drafts',
 }
+
+export enum userRoute {
+  base = '/users',
+}
