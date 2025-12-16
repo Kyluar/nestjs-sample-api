@@ -2,6 +2,7 @@ import { z } from '@/lib/config/zod'
 import { createZodDto } from 'nestjs-zod'
 import { Prisma, User } from '@prisma/client'
 import { timestampSchema } from '../common'
+import { strictObject } from 'zod'
 
 export const createUserSchema = z.strictObject({
   name: z.string().trim().nonempty(),
@@ -10,7 +11,10 @@ export const createUserSchema = z.strictObject({
 }) satisfies z.ZodType<Prisma.UserCreateInput>
 export type CreateUserDtoType = z.infer<typeof createUserSchema>
 
-export const updateUserSchema = createUserSchema.partial()
+export const updateUserSchema = strictObject(
+  createUserSchema.omit({ password: true }).shape
+).partial()
+export type UpdateUserDtoType = z.infer<typeof updateUserSchema>
 
 export const userSchema = z.strictObject({
   uuid: z.uuid(),
