@@ -14,7 +14,7 @@ import {
   CreateUserDto,
   UserResponseDtoType,
 } from '@/lib/dtos/user'
-import { User as UserModel, Prisma } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { ApiBearerAuth } from '@nestjs/swagger'
 import { IUserController } from '@/lib/types/modules/user'
 
@@ -24,14 +24,14 @@ export class UserController implements IUserController {
   constructor(private readonly service: UsersService) {}
 
   @Get()
-  getUsers(): Promise<UserModel[]> {
+  getUsers(): Promise<UserResponseDtoType[]> {
     return this.service.getUsers()
   }
 
   @Get(':uuid')
   getUserByUuid(
     @Param('uuid', ParseUUIDPipe) uuid: string
-  ): Promise<UserModel> {
+  ): Promise<UserResponseDtoType> {
     return this.service.getUserByUuid(uuid)
   }
 
@@ -44,12 +44,14 @@ export class UserController implements IUserController {
   updateUser(
     @Param('uuid', ParseUUIDPipe) uuid: string,
     @Body() partialUserDto: UpdateUserDto
-  ): Promise<UserModel> {
+  ): Promise<UserResponseDtoType> {
     return this.service.updateUserByUuid(uuid, partialUserDto)
   }
 
   @Delete(':uuid')
-  deleteUser(@Param('uuid', ParseUUIDPipe) uuid: string): Promise<UserModel> {
+  deleteUser(
+    @Param('uuid', ParseUUIDPipe) uuid: string
+  ): Promise<UserResponseDtoType> {
     return this.service.deleteUserByUuid(uuid)
   }
 }

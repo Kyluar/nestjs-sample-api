@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common'
+import { Controller, Get, Inject } from '@nestjs/common'
 import {
   HealthCheckService,
   HttpHealthIndicator,
@@ -7,7 +7,8 @@ import {
   HealthCheckResult,
 } from '@nestjs/terminus'
 import { Public } from '@/lib/decorators/public'
-import { PrismaService } from 'nestjs-prisma'
+import { CustomPrismaService } from 'nestjs-prisma'
+import { ExtendedPrismaClient } from '@/lib/config/prisma/extensions'
 
 @Public()
 @Controller('health')
@@ -16,7 +17,8 @@ export class HealthController {
     private health: HealthCheckService,
     private http: HttpHealthIndicator,
     private prismaHealth: PrismaHealthIndicator,
-    private prisma: PrismaService
+    @Inject('PrismaService')
+    private prisma: CustomPrismaService<ExtendedPrismaClient>
   ) {}
 
   @Get()
@@ -38,7 +40,7 @@ export class HealthController {
   @HealthCheck()
   checkPrisma() {
     return this.health.check([
-      () => this.prismaHealth.pingCheck('prisma', this.prisma),
+      () => this.prismaHealth.pingCheck('prisma', this.prisma.client),
     ])
   }
 }

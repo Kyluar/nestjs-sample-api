@@ -1,45 +1,32 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common'
-import { PrismaService } from 'nestjs-prisma'
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
+import { CustomPrismaService } from 'nestjs-prisma'
 import { JwtService } from '@nestjs/jwt'
 import { LoginDto, LoginReturnDto, loginReturnSchema } from '@/lib/dtos/auth'
-import * as bcrypt from 'bcrypt'
+import { ExtendedPrismaClient } from '@/lib/config/prisma/extensions'
 
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: PrismaService,
+    @Inject('PrismaService')
+    private prisma: CustomPrismaService<ExtendedPrismaClient>,
     private jwtService: JwtService
   ) {}
 
   async login({ password, email }: LoginDto): Promise<LoginReturnDto> {
-    // Step 1: Fetch a user with the given email
-    const user = await this.prisma.user.findUniqueOrThrow({
-      where: { email: email as string },
-    })
+    const { userUuid, isAuth } = await this.prisma.client.user.authenticate(
+      email,
+      password
+    )
 
-    // If no user is found, throw an error
-    if (!user) {
-      throw new NotFoundException(`No user found for email: ${email}`)
-    }
-
-    // Step 2: Check if the password is correct
-    const isMatch = await bcrypt.compare(password as string, user.password)
-
-    // If password does not match, throw an error
-    if (!isMatch) {
+    if (!isAuth) {
       throw new UnauthorizedException('Invalid password')
     }
 
-    const payload = { sub: user.uuid }
+    const payload = { sub: userUuid }
 
-    // Step 3: Generate a JWT containing the user's ID and return it
     return loginReturnSchema.parse({
       accessToken: this.jwtService.sign(payload),
-      userUuid: user.uuid,
+      userUuid,
     })
   }
 }

@@ -4,13 +4,20 @@ import { APP_PIPE, APP_GUARD } from '@nestjs/core'
 import { JwtAuthGuard } from './guards'
 import { UserModule, PostModule, AuthModule, HealthModule } from './modules'
 import { ConfigModule } from '@nestjs/config'
-import { PrismaModule } from 'nestjs-prisma'
+import { CustomPrismaModule } from 'nestjs-prisma'
 import { envConfiguration } from '@/lib/config/env/configuration'
 import { validate } from '@/lib/config/env/validation'
+import { extendedPrismaClient } from './lib/config/prisma/extensions'
 
 @Module({
   imports: [
-    PrismaModule.forRoot({ isGlobal: true }),
+    CustomPrismaModule.forRootAsync({
+      name: 'PrismaService',
+      isGlobal: true,
+      useFactory: () => {
+        return extendedPrismaClient
+      },
+    }),
     UserModule,
     PostModule,
     AuthModule,

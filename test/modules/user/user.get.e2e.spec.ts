@@ -2,7 +2,7 @@ import * as request from 'supertest'
 import { INestApplication } from '@nestjs/common'
 import { User } from '@prisma/client'
 import { userRoute } from '@/test/lib/routes'
-import { userSchema } from '@/lib/dtos/user'
+import { userResponseSchema } from '@/lib/dtos/user'
 import { setupTestEnvironment, teardownTestEnvironment } from '@/test/lib/utils'
 
 describe('Module User: E2E GET Tests', () => {
@@ -27,7 +27,7 @@ describe('Module User: E2E GET Tests', () => {
           .expect((res) => {
             const user = res.body as User
             expect(res.statusCode).toBe(200)
-            expect(userSchema.safeParse(user).success).toBe(true)
+            expect(userResponseSchema.safeParse(user).success).toBe(true)
             expect(user.uuid).toBe(existingUserUuid)
           })
       })
@@ -43,7 +43,7 @@ describe('Module User: E2E GET Tests', () => {
             expect(res.statusCode).toBe(200)
             expect(Array.isArray(users)).toBe(true)
             expect(
-              users.every((user) => userSchema.safeParse(user).success)
+              users.every((user) => userResponseSchema.safeParse(user).success)
             ).toBe(true)
           })
       })

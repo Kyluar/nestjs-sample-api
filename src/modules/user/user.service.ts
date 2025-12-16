@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Prisma, User } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { ConfigService } from '@nestjs/config'
 import * as bcrypt from 'bcrypt'
 import { IUserService } from '@/lib/types/modules/user'
@@ -17,15 +17,15 @@ export class UsersService implements IUserService {
     return bcrypt.hash(password, this.configService.getOrThrow('saltRounds'))
   }
 
-  getUsers(): Promise<User[]> {
+  getUsers(): Promise<UserResponseDtoType[]> {
     return this.repository.users({})
   }
 
-  getUserByUuid(uuid: string): Promise<User> {
+  getUserByUuid(uuid: string): Promise<UserResponseDtoType> {
     return this.repository.user({ uuid })
   }
 
-  deleteUserByUuid(uuid: string): Promise<User> {
+  deleteUserByUuid(uuid: string): Promise<UserResponseDtoType> {
     return this.repository.deleteUser({ uuid })
   }
 
@@ -37,7 +37,7 @@ export class UsersService implements IUserService {
   async updateUserByUuid(
     uuid: string,
     data: Prisma.UserUpdateInput
-  ): Promise<User> {
+  ): Promise<UserResponseDtoType> {
     if (data.password) {
       data.password = await this.hashPassword(data.password as string)
     }
