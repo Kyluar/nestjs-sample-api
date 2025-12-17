@@ -12,6 +12,9 @@ const configBaseSchema = z.strictObject({
   auth: authConfigSchema,
   saltRounds: saltRoundsSchema,
   database: databaseConfigSchema,
+  corsOrigin: z.url({
+    protocol: /^https?$/,
+  }),
 })
 
 export const configSchema = z.discriminatedUnion('nodeEnv', [

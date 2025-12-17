@@ -7,6 +7,14 @@ import { ConfigService } from '@nestjs/config'
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   const port = app.get(ConfigService).getOrThrow<number>('port')
+  const corsOrigin = app.get(ConfigService).getOrThrow<string>('corsOrigin')
+
+  app.enableCors({
+    origin: corsOrigin,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+    credentials: true,
+  })
 
   const config = new DocumentBuilder()
     .setTitle('Time Capsule API')
@@ -22,7 +30,8 @@ async function bootstrap() {
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter))
 
   await app.listen(port)
-  console.log(`Server is running on port ${port}`)
+  console.info(`Server is running on port ${port}`)
+  console.info(`Cors Origin: ${corsOrigin}`)
 }
 
 bootstrap()

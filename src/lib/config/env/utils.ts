@@ -12,6 +12,7 @@ export function getConfig(config: Record<string, any>): ConfigSchemaOutput {
     database: {
       url: config.DATABASE_URL as string,
     },
+    corsOrigin: config.CORS_ORIGIN as string,
     ...(nodeEnv === Environment.Test && {
       test: {
         name: config.TEST_USER_NAME as string,
