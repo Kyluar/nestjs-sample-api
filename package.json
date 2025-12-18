@@ -109,6 +109,6 @@
     }
   },
   "prisma": {
-    "seed": "ts-node -r tsconfig-paths/register prisma/seed.ts"
+    "seed": "node dist/prisma/seed.js"
   }
 }
