@@ -1,0 +1,52 @@
+services:
+  nestjs-sample-db:
+    image: mysql:9.5.0
+    hostname: db
+    container_name: nestjs-sample-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: sample_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: nestsample
+    ports:
+      - '3306:3306'
+    networks:
+      - nestjs-sample-network
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'mysqladmin',
+          'ping',
+          '-h',
+          'localhost',
+          '-u$$MYSQL_USER',
+          '-p$$MYSQL_PASSWORD',
+        ]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+
+  nestjs-sample-server:
+    build:
+      context: ..
+      dockerfile: ./docker/dockerfile
+    image: nestjs-sample-api:latest
+    hostname: server
+    container_name: nestjs-sample-server
+    ports:
+      - '3000:3000'
+    stdin_open: true
+    tty: true
+    depends_on:
+      nestjs-sample-db:
+        condition: service_healthy
+    env_file:
+      - ../.env.production
+    networks:
+      - nestjs-sample-network
+
+networks:
+  nestjs-sample-network:
+    name: nestjs-sample-network
