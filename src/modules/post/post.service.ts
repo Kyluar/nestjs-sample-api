@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { IPostService } from '@/lib/types/modules/post'
-import { PostRepository } from './post.repository'
-import { Post, Prisma } from '@prisma/client'
+import type { Post, Prisma } from '@prisma/client'
+import type { IPostService } from '@/lib/types/modules/post'
+import type { PostRepository } from './post.repository'
 
 @Injectable()
 export class PostService implements IPostService {

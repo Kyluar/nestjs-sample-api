@@ -1,7 +1,7 @@
+import type { Prisma, PrismaClient } from '@prisma/client'
 import * as bcrypt from 'bcrypt'
-import { Prisma, PrismaClient } from '@prisma/client'
-import { Environment } from '@/lib/types/common.types'
 import { saltRoundsSchema } from '@/lib/dtos/config/vars.dto'
+import { Environment } from '@/lib/types/common.types'
 
 const seedUsers: Prisma.UserCreateInput[] = [
   {

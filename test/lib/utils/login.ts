@@ -1,7 +1,7 @@
-import { INestApplication } from '@nestjs/common'
+import type { INestApplication } from '@nestjs/common'
+import type { Response } from 'supertest'
 import * as request from 'supertest'
-import { TestConfigSchemaOutput } from '@/lib/dtos/config/config.dto'
-import { Response } from 'supertest'
+import type { TestConfigSchemaOutput } from '@/lib/dtos/config/config.dto'
 
 export async function login(
   app: INestApplication,

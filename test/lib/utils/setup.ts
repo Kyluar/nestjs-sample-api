@@ -1,14 +1,14 @@
-import { Test } from '@nestjs/testing'
-import { INestApplication } from '@nestjs/common'
+import type { INestApplication } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { AppModule } from '@/app.module'
-import { TestConfigSchemaOutput } from '@/lib/dtos/config/config.dto'
-import { LoginReturnDto, loginReturnSchema } from '@/lib/dtos/auth'
-import { seed, clean } from '@/lib/config/prisma'
-import { PrismaClient } from '@prisma/client'
-import { login } from './login'
 import { HttpAdapterHost } from '@nestjs/core'
+import { Test } from '@nestjs/testing'
+import { PrismaClient } from '@prisma/client'
+import { AppModule } from '@/app.module'
+import { clean, seed } from '@/lib/config/prisma'
+import { type LoginReturnDto, loginReturnSchema } from '@/lib/dtos/auth'
+import type { TestConfigSchemaOutput } from '@/lib/dtos/config/config.dto'
 import { PrismaClientExceptionFilter } from '@/lib/filters'
+import { login } from './login'
 
 export type AppContext = {
   app: INestApplication

@@ -1,8 +1,8 @@
+import type { INestApplication } from '@nestjs/common'
+import type { User } from '@prisma/client'
 import * as request from 'supertest'
-import { INestApplication } from '@nestjs/common'
-import { User } from '@prisma/client'
-import { userRoute } from '@/test/lib/routes'
 import { userResponseSchema } from '@/lib/dtos/user'
+import { userRoute } from '@/test/lib/routes'
 import { setupTestEnvironment, teardownTestEnvironment } from '@/test/lib/utils'
 
 describe('Module User: E2E GET Tests', () => {

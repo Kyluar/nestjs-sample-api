@@ -1,8 +1,8 @@
-import { z } from '@/lib/config/zod'
+import type { Prisma, User } from '@prisma/client'
 import { createZodDto } from 'nestjs-zod'
-import { Prisma, User } from '@prisma/client'
-import { timestampSchema } from '../common'
 import { strictObject } from 'zod'
+import { z } from '@/lib/config/zod'
+import { timestampSchema } from '../common'
 
 export const createUserSchema = z.strictObject({
   name: z.string().trim().nonempty(),

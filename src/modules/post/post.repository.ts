@@ -1,12 +1,12 @@
-import { Injectable, Inject } from '@nestjs/common'
-import { CustomPrismaService } from 'nestjs-prisma'
-import { Post, Prisma } from '@prisma/client'
-import {
-  IPostRepository,
+import { Inject, Injectable } from '@nestjs/common'
+import type { Post, Prisma } from '@prisma/client'
+import type { CustomPrismaService } from 'nestjs-prisma'
+import type { ExtendedPrismaClient } from '@/lib/config/prisma/extensions'
+import type {
   GetPostsParams,
+  IPostRepository,
   UpdatePostParams,
 } from '@/lib/types/modules/post'
-import { ExtendedPrismaClient } from '@/lib/config/prisma/extensions'
 
 @Injectable()
 export class PostRepository implements IPostRepository {

@@ -1,6 +1,6 @@
-import { INestApplication } from '@nestjs/common'
-import { clean } from '@/lib/config/prisma'
+import type { INestApplication } from '@nestjs/common'
 import { PrismaClient } from '@prisma/client'
+import { clean } from '@/lib/config/prisma'
 
 export async function teardownTestEnvironment(
   app: INestApplication

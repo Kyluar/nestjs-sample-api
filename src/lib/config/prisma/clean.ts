@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import type { PrismaClient } from '@prisma/client'
 
 export async function clean(prisma: PrismaClient): Promise<void> {
   const tables = ['users', 'posts'] // Adicione todas as suas tabelas aqui, usando os nomes de mapeamento (@@map)

@@ -1,13 +1,13 @@
-import {
+import { Inject, Injectable } from '@nestjs/common'
+import type { Prisma } from '@prisma/client'
+import type { CustomPrismaService } from 'nestjs-prisma'
+import type { ExtendedPrismaClient } from '@/lib/config/prisma/extensions'
+import type { UserResponseDtoType } from '@/lib/dtos/user'
+import type {
   GetUsersParams,
   IUserRepository,
   UpdateUserParams,
 } from '@/lib/types/modules/user'
-import { Injectable, Inject } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
-import { CustomPrismaService } from 'nestjs-prisma'
-import { UserResponseDtoType } from '@/lib/dtos/user'
-import { ExtendedPrismaClient } from '@/lib/config/prisma/extensions'
 
 @Injectable()
 export class UserRepository implements IUserRepository {

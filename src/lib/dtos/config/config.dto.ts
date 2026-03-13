@@ -1,11 +1,11 @@
 import { z } from '@/lib/config/zod'
-import { Environment } from '@/lib/types/common.types'
 import {
-  saltRoundsSchema,
-  databaseConfigSchema,
-  testConfigSchema,
   authConfigSchema,
+  databaseConfigSchema,
+  saltRoundsSchema,
+  testConfigSchema,
 } from '@/lib/dtos/config/vars.dto'
+import { Environment } from '@/lib/types/common.types'
 
 const configBaseSchema = z.strictObject({
   port: z.coerce.number().nonnegative().default(3000),

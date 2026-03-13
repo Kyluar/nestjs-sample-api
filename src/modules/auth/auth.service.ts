@@ -1,8 +1,12 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
-import { CustomPrismaService } from 'nestjs-prisma'
-import { JwtService } from '@nestjs/jwt'
-import { LoginDto, LoginReturnDto, loginReturnSchema } from '@/lib/dtos/auth'
-import { ExtendedPrismaClient } from '@/lib/config/prisma/extensions'
+import type { JwtService } from '@nestjs/jwt'
+import type { CustomPrismaService } from 'nestjs-prisma'
+import type { ExtendedPrismaClient } from '@/lib/config/prisma/extensions'
+import {
+  type LoginDto,
+  type LoginReturnDto,
+  loginReturnSchema,
+} from '@/lib/dtos/auth'
 
 @Injectable()
 export class AuthService {

@@ -1,4 +1,4 @@
-export { HealthModule } from './health/health.module'
 export { AuthModule } from './auth/auth.module'
-export { UserModule } from './user/user.module'
+export { HealthModule } from './health/health.module'
 export { PostModule } from './post/post.module'
+export { UserModule } from './user/user.module'

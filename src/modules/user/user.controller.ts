@@ -1,22 +1,22 @@
 import {
-  Controller,
-  Param,
-  Get,
-  Post,
   Body,
-  Patch,
+  Controller,
   Delete,
+  Get,
+  Param,
   ParseUUIDPipe,
+  Patch,
+  Post,
 } from '@nestjs/common'
-import { UsersService } from './user.service'
-import {
-  UpdateUserDto,
+import { ApiBearerAuth } from '@nestjs/swagger'
+import type { Prisma } from '@prisma/client'
+import type {
   CreateUserDto,
+  UpdateUserDto,
   UserResponseDtoType,
 } from '@/lib/dtos/user'
-import { Prisma } from '@prisma/client'
-import { ApiBearerAuth } from '@nestjs/swagger'
-import { IUserController } from '@/lib/types/modules/user'
+import type { IUserController } from '@/lib/types/modules/user'
+import type { UsersService } from './user.service'
 
 @ApiBearerAuth()
 @Controller('users')

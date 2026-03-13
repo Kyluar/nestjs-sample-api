@@ -1,7 +1,7 @@
-import { ArgumentsHost, Catch } from '@nestjs/common'
+import { type ArgumentsHost, Catch } from '@nestjs/common'
 import { BaseExceptionFilter } from '@nestjs/core'
 import { Prisma } from '@prisma/client'
-import { Response } from 'express'
+import type { Response } from 'express'
 import { getPrismaExceptionResponse } from '@/lib/errors'
 
 @Catch(Prisma.PrismaClientKnownRequestError)

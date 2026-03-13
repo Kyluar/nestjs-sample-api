@@ -1,5 +1,5 @@
-import { Prisma, Post } from '@prisma/client'
-import { CreatePostDto, UpdatePostDto } from '@/lib/dtos/post'
+import type { Post, Prisma } from '@prisma/client'
+import type { CreatePostDto, UpdatePostDto } from '@/lib/dtos/post'
 
 export type GetPostsParams = {
   skip?: number

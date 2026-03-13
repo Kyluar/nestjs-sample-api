@@ -1,6 +1,6 @@
-import { z } from '@/lib/config/zod'
+import type { Post, Prisma } from '@prisma/client'
 import { createZodDto } from 'nestjs-zod'
-import { Prisma, Post } from '@prisma/client'
+import { z } from '@/lib/config/zod'
 import { timestampSchema } from '../common'
 
 export const createPostSchema = z.strictObject({

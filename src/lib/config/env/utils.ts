@@ -1,5 +1,8 @@
+import {
+  type ConfigSchemaOutput,
+  configSchema,
+} from '@/lib/dtos/config/config.dto'
 import { Environment } from '@/lib/types/common.types'
-import { configSchema, ConfigSchemaOutput } from '@/lib/dtos/config/config.dto'
 
 export function getConfig(config: Record<string, any>): ConfigSchemaOutput {
   const nodeEnv = config.NODE_ENV as Environment

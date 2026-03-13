@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
+import type { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 
 type PrismaExceptionResponse = {
   statusCode: HttpStatus | null
@@ -16,8 +16,8 @@ export function getPrismaExceptionResponse(
   switch (exception.code) {
     case 'P2002': {
       info.statusCode = HttpStatus.CONFLICT
-      const field = exception.meta!.target
-      info.message = `Já existe um registro com o valor informado no campo: ${field as string}`
+      const field = exception.meta?.target as string | 'field_not_find'
+      info.message = `Já existe um registro com o valor informado no campo: ${field}`
       break
     }
     case 'P2025': {

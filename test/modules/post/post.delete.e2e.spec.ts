@@ -1,8 +1,8 @@
+import type { INestApplication } from '@nestjs/common'
+import type { Post } from '@prisma/client'
 import * as request from 'supertest'
-import { INestApplication } from '@nestjs/common'
-import { Post } from '@prisma/client'
-import { postRoute } from '@/test/lib/routes'
 import { postSchema } from '@/lib/dtos/post'
+import { postRoute } from '@/test/lib/routes'
 import { setupTestEnvironment, teardownTestEnvironment } from '@/test/lib/utils'
 
 describe('Module Post: E2E DELETE Tests', () => {

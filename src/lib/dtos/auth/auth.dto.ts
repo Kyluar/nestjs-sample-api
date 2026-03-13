@@ -1,5 +1,5 @@
-import { z } from '@/lib/config/zod'
 import { createZodDto } from 'nestjs-zod'
+import { z } from '@/lib/config/zod'
 import { userSchema } from '../user'
 
 export const loginSchema = z.strictObject(

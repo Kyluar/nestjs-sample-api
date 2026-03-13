@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common'
-import { CustomZodValidationPipe } from './lib/pipes'
-import { APP_PIPE, APP_GUARD } from '@nestjs/core'
-import { JwtAuthGuard } from './guards'
-import { UserModule, PostModule, AuthModule, HealthModule } from './modules'
 import { ConfigModule } from '@nestjs/config'
+import { APP_GUARD, APP_PIPE } from '@nestjs/core'
 import { CustomPrismaModule } from 'nestjs-prisma'
 import { envConfiguration } from '@/lib/config/env/configuration'
 import { validate } from '@/lib/config/env/validation'
+import { JwtAuthGuard } from './guards'
 import { extendedPrismaClient } from './lib/config/prisma/extensions'
+import { CustomZodValidationPipe } from './lib/pipes'
+import { AuthModule, HealthModule, PostModule, UserModule } from './modules'
 
 @Module({
   imports: [
