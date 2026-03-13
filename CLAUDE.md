@@ -22,7 +22,7 @@ pnpm lint               # Biome check with auto-fix (src/ and test/)
 pnpm format             # Biome format (src/ and test/)
 
 # Commits
-pnpm commit             # Interactive commit via gitmoji-cli (triggers lint-staged + commitlint)
+pnpm commit             # Interactive commit via gitmoji-cli (triggers lint-staged + tsc --noEmit + commitlint)
 
 # Prisma (wraps prisma CLI with correct env)
 pnpm prisma:dev <cmd>   # e.g. pnpm prisma:dev migrate dev
