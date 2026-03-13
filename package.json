@@ -21,7 +21,7 @@
     "prisma:dev": "dotenv -e .env.development -- npx prisma",
     "prisma:test": "dotenv -e .env.test -- npx prisma",
     "commit": "gitmoji -c",
-    "prepare": "husky"
+    "prepare": "husky || true"
   },
   "lint-staged": {
     "*.ts": "biome check --write --no-errors-on-unmatched"
@@ -114,5 +114,8 @@
   },
   "prisma": {
     "seed": "node dist/prisma/seed.js"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["bcrypt", "@prisma/client", "@prisma/engines", "prisma", "@swc/core"]
   }
 }
