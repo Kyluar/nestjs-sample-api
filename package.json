@@ -19,7 +19,12 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "dotenv -e .env.test -- jest --config ./test/jest-e2e.json -i",
     "prisma:dev": "dotenv -e .env.development -- npx prisma",
-    "prisma:test": "dotenv -e .env.test -- npx prisma"
+    "prisma:test": "dotenv -e .env.test -- npx prisma",
+    "commit": "gitmoji -c",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.ts": "biome check --write --no-errors-on-unmatched"
   },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",
@@ -48,6 +53,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.6",
+    "@commitlint/cli": "^20.4.4",
+    "@commitlint/core": "^20.4.4",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
@@ -59,7 +66,11 @@
     "@types/node": "^22.10.7",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.2",
+    "commitlint-config-gitmoji": "^2.3.1",
+    "gitmoji": "^1.1.1",
+    "husky": "^9.1.7",
     "jest": "^29.7.0",
+    "lint-staged": "^16.3.3",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",

@@ -18,8 +18,11 @@ pnpm test:cov           # Unit tests with coverage
 pnpm test:e2e           # E2E tests
 
 # Code quality
-pnpm lint               # ESLint with auto-fix
-pnpm format             # Prettier formatting
+pnpm lint               # Biome check with auto-fix (src/ and test/)
+pnpm format             # Biome format (src/ and test/)
+
+# Commits
+pnpm commit             # Interactive commit via gitmoji-cli (triggers lint-staged + commitlint)
 
 # Prisma (wraps prisma CLI with correct env)
 pnpm prisma:dev <cmd>   # e.g. pnpm prisma:dev migrate dev
@@ -80,3 +83,9 @@ Commits follow [Conventional Commits](https://www.conventionalcommits.org/) with
 **Common types:** `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`
 
 **Scope:** module or area affected (e.g., `auth`, `user`, `post`, `prisma`, `docker`)
+
+**Tooling:** Husky enforces the convention automatically:
+- `pre-commit` — runs `lint-staged` (Biome check on staged `.ts` files)
+- `commit-msg` — runs `commitlint` to validate the message format
+
+Use `pnpm commit` for the interactive gitmoji-cli flow, which generates the correct format and triggers both hooks.
