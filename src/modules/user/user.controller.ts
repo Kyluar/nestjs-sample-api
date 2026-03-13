@@ -16,7 +16,7 @@ import type {
   UserResponseDtoType,
 } from '@/lib/dtos/user'
 import type { IUserController } from '@/lib/types/modules/user'
-import type { UsersService } from './user.service'
+import { UsersService } from './user.service'
 
 @ApiBearerAuth()
 @Controller('users')

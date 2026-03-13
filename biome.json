@@ -23,6 +23,9 @@
       "suspicious": {
         "noExplicitAny": "off"
       },
+      "style": {
+        "useImportType": "off"
+      },
       "correctness": {
         "noUnusedFunctionParameters": "off"
       }

@@ -12,7 +12,7 @@ import { ApiBearerAuth } from '@nestjs/swagger'
 import type { Post as PostModel, Prisma } from '@prisma/client'
 import type { CreatePostDto, UpdatePostDto } from '@/lib/dtos/post'
 import type { IPostController } from '@/lib/types/modules/post'
-import type { PostService } from './post.service'
+import { PostService } from './post.service'
 
 @ApiBearerAuth()
 @Controller('posts')

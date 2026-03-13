@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import type { ConfigService } from '@nestjs/config'
+import { ConfigService } from '@nestjs/config'
 import type { Prisma } from '@prisma/client'
 import * as bcrypt from 'bcrypt'
 import type { UserResponseDtoType } from '@/lib/dtos/user'
 import type { IUserService } from '@/lib/types/modules/user'
-import type { UserRepository } from './user.repository'
+import { UserRepository } from './user.repository'
 
 @Injectable()
 export class UsersService implements IUserService {

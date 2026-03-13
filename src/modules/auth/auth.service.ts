@@ -1,5 +1,5 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
-import type { JwtService } from '@nestjs/jwt'
+import { JwtService } from '@nestjs/jwt'
 import type { CustomPrismaService } from 'nestjs-prisma'
 import type { ExtendedPrismaClient } from '@/lib/config/prisma/extensions'
 import {

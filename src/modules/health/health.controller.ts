@@ -2,9 +2,9 @@ import { Controller, Get, Inject } from '@nestjs/common'
 import {
   HealthCheck,
   type HealthCheckResult,
-  type HealthCheckService,
-  type HttpHealthIndicator,
-  type PrismaHealthIndicator,
+  HealthCheckService,
+  HttpHealthIndicator,
+  PrismaHealthIndicator,
 } from '@nestjs/terminus'
 import type { CustomPrismaService } from 'nestjs-prisma'
 import type { ExtendedPrismaClient } from '@/lib/config/prisma/extensions'
