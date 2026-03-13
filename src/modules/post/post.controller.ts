@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common'
 import { ApiBearerAuth } from '@nestjs/swagger'
 import type { Post as PostModel, Prisma } from '@prisma/client'
-import type { CreatePostDto, UpdatePostDto } from '@/lib/dtos/post'
+import { CreatePostDto, UpdatePostDto } from '@/lib/dtos/post'
 import type { IPostController } from '@/lib/types/modules/post'
 import { PostService } from './post.service'
 

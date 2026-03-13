@@ -10,10 +10,10 @@ import {
 } from '@nestjs/common'
 import { ApiBearerAuth } from '@nestjs/swagger'
 import type { Prisma } from '@prisma/client'
-import type {
+import {
   CreateUserDto,
   UpdateUserDto,
-  UserResponseDtoType,
+  type UserResponseDtoType,
 } from '@/lib/dtos/user'
 import type { IUserController } from '@/lib/types/modules/user'
 import { UsersService } from './user.service'
