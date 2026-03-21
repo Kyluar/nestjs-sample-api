@@ -7,7 +7,7 @@ export const createPostSchema = z.strictObject({
   authorUuid: z.uuid(),
   title: z.string().trim().nonempty().max(30),
   content: z.string().trim().nonempty().max(100),
-  published: z.boolean().default(true),
+  published: z.boolean().nullable().default(true),
 }) satisfies z.ZodType<Prisma.PostCreateInput>
 
 export type CreatePostDtoType = z.infer<typeof createPostSchema>
@@ -22,3 +22,4 @@ export const postSchema = z.strictObject({
 
 export class CreatePostDto extends createZodDto(createPostSchema) {}
 export class UpdatePostDto extends createZodDto(updatePostSchema) {}
+export class PostDto extends createZodDto(postSchema) {}

@@ -11,6 +11,7 @@ export const loginReturnSchema = z.strictObject({
   userUuid: z.uuid(),
 })
 
-export type LoginReturnDto = z.infer<typeof loginReturnSchema>
+export type LoginReturnDtoType = z.infer<typeof loginReturnSchema>
 
 export class LoginDto extends createZodDto(loginSchema) {}
+export class LoginReturnDto extends createZodDto(loginReturnSchema) {}

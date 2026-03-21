@@ -29,3 +29,4 @@ export type UserResponseDtoType = z.infer<typeof userResponseSchema>
 
 export class CreateUserDto extends createZodDto(createUserSchema) {}
 export class UpdateUserDto extends createZodDto(updateUserSchema) {}
+export class UserResponseDto extends createZodDto(userResponseSchema) {}

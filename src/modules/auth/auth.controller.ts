@@ -1,6 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common'
+import { ZodResponse } from 'nestjs-zod'
 import { Public } from '@/lib/decorators/public'
-import type { LoginDto } from '@/lib/dtos/auth/auth.dto'
+import { LoginDto, LoginReturnDto } from '@/lib/dtos/auth/auth.dto'
 import { AuthService } from './auth.service'
 
 @Controller('auth')
@@ -9,6 +10,11 @@ export class AuthController {
 
   @Public()
   @Post('login')
+  @ZodResponse({
+    status: 200,
+    description: 'Login successful',
+    type: LoginReturnDto,
+  })
   login(@Body() body: LoginDto) {
     return this.authService.login(body)
   }
