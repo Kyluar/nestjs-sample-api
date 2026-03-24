@@ -47,7 +47,7 @@ async function createAuthenticatedApp(): Promise<AppContext> {
 
   const loginResponse = await login(app, credentials)
 
-  if (loginResponse.statusCode !== 201) throw new Error('Authentication Failed')
+  if (loginResponse.statusCode !== 200) throw new Error('Authentication Failed')
   else if (!loginReturnSchema.safeParse(loginResponse.body).success)
     throw new Error('Wrong login payload')
 
