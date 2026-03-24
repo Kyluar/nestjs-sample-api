@@ -27,8 +27,6 @@ export class UserController implements IUserController {
 
   @Get()
   @ZodResponse({
-    status: 200,
-    description: 'List all users',
     type: [UserResponseDto],
   })
   getUsers(): Promise<UserResponseDtoType[]> {
@@ -37,8 +35,6 @@ export class UserController implements IUserController {
 
   @Get(':uuid')
   @ZodResponse({
-    status: 200,
-    description: 'Get user by UUID',
     type: UserResponseDto,
   })
   getUserByUuid(
@@ -49,8 +45,6 @@ export class UserController implements IUserController {
 
   @Post()
   @ZodResponse({
-    status: 201,
-    description: 'User created',
     type: UserResponseDto,
   })
   createUser(@Body() userData: CreateUserDto): Promise<UserResponseDtoType> {
@@ -59,8 +53,6 @@ export class UserController implements IUserController {
 
   @Patch(':uuid')
   @ZodResponse({
-    status: 200,
-    description: 'User updated',
     type: UserResponseDto,
   })
   updateUser(
@@ -72,8 +64,6 @@ export class UserController implements IUserController {
 
   @Delete(':uuid')
   @ZodResponse({
-    status: 200,
-    description: 'User deleted',
     type: UserResponseDto,
   })
   deleteUser(

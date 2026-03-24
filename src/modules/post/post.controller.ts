@@ -21,25 +21,25 @@ export class PostController implements IPostController {
   constructor(protected readonly service: PostService) {}
 
   @Get('feed')
-  @ZodResponse({ status: 200, description: 'Published posts', type: [PostDto] })
+  @ZodResponse({ type: [PostDto] })
   async getPublishedPosts(): Promise<PostModel[]> {
     return this.service.getPublishedPosts()
   }
 
   @Get('drafts')
-  @ZodResponse({ status: 200, description: 'Draft posts', type: [PostDto] })
+  @ZodResponse({ type: [PostDto] })
   async getDraftPosts(): Promise<PostModel[]> {
     return this.service.getDraftPosts()
   }
 
   @Post()
-  @ZodResponse({ status: 201, description: 'Post created', type: PostDto })
+  @ZodResponse({ type: PostDto })
   async createPost(@Body() postData: CreatePostDto): Promise<PostModel> {
     return this.service.createPost(postData as Prisma.PostCreateInput)
   }
 
   @Get(':uuid')
-  @ZodResponse({ status: 200, description: 'Get post by UUID', type: PostDto })
+  @ZodResponse({ type: PostDto })
   async getPostByUuid(
     @Param('uuid', ParseUUIDPipe) uuid: string
   ): Promise<PostModel> {
@@ -47,7 +47,7 @@ export class PostController implements IPostController {
   }
 
   @Patch(':uuid')
-  @ZodResponse({ status: 200, description: 'Post updated', type: PostDto })
+  @ZodResponse({ type: PostDto })
   async updatePost(
     @Param('uuid', ParseUUIDPipe) uuid: string,
     @Body() partialPostDto: UpdatePostDto
@@ -56,7 +56,7 @@ export class PostController implements IPostController {
   }
 
   @Delete(':uuid')
-  @ZodResponse({ status: 200, description: 'Post deleted', type: PostDto })
+  @ZodResponse({ type: PostDto })
   async deletePost(@Param('uuid', ParseUUIDPipe) uuid: string) {
     return this.service.deletePostByUuid(uuid)
   }

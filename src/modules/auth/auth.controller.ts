@@ -12,7 +12,6 @@ export class AuthController {
   @Post('login')
   @ZodResponse({
     status: 200,
-    description: 'Login successful',
     type: LoginReturnDto,
   })
   login(@Body() body: LoginDto) {
